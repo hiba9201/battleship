@@ -1,6 +1,6 @@
 import tkinter
 from PIL import ImageTk, Image
-from game import field
+from game import game
 
 
 class Application:
@@ -28,7 +28,7 @@ class Game:
     def create_window():
         window = tkinter.Tk()
         window.title('Battleship')
-        bot_field = field.Field.create_field()
+        bot_field = game.Field.create_field()
         Game.generate_field(window, bot_field)
 
         window.mainloop()
