@@ -1,5 +1,5 @@
 import unittest
-from game.game import *
+from game.environment import *
 
 
 class CellTest(unittest.TestCase):
@@ -13,31 +13,31 @@ class CellTest(unittest.TestCase):
 
 class FieldTest(unittest.TestCase):
     def test_place_1_ship(self):
-        field = Field()
-        field.add_cells(Cell(1, 1))
-        self.assertNotEqual(field.place_ship_on_field(Ship(1), Cell(0, 0)),
+        field = Field(5, 5)
+        field.field[1][1].state = CellState.taken
+        self.assertNotEqual(field.place_ship_on_field([(0, 0)]),
                             "OK")
-        self.assertEqual(field.place_ship_on_field(Ship(1), Cell(1, 3)), "OK")
-        self.assertEqual(2, len(field.field))
+        self.assertEqual(field.place_ship_on_field([(1, 3)]), "OK")
 
     def test_place_2_ship(self):
-        field = Field()
-        field.add_cells(Cell(1, 1))
+        field = Field(5, 5)
+        field.field[1][1].state = CellState.taken
         self.assertNotEqual(
-            field.place_ship_on_field(Ship(2), Cell(0, 0), Cell(0, 1)), "OK")
+            field.place_ship_on_field([(0, 0), (0, 1)]), "OK")
         self.assertEqual(
-            field.place_ship_on_field(Ship(2), Cell(1, 3), Cell(2, 3)), "OK")
-        self.assertEqual(3, len(field.field))
-
-    def test_add_cell(self):
-        field = Field()
-        field.add_cells(Cell(0, 0))
-        self.assertEqual(len(field.field), 1)
+            field.place_ship_on_field([(1, 3), (2, 3)]), "OK")
 
 
 class ShipTests(unittest.TestCase):
     def test_multiply(self):
         self.assertEqual(len(Ship(2) * 3), 3)
+
+    def test_rotation(self):
+        ship = Ship(2)
+        ship.rotate()
+        self.assertEqual(Rotation.horizontal, ship.rotation)
+        ship.rotate()
+        self.assertEqual(Rotation.vertical, ship.rotation)
 
 
 if __name__ == '__main__':
