@@ -1,54 +1,79 @@
 #! /bin/local/python3
 from enum import *
+import random
 
 
 class Environment:
     def __init__(self, m, n):
         self.user_field = Field(m, n)
         self.bot_field = Field(m, n)
-        self.user_stack = [Ship(4), Ship(3), Ship(3), Ship(2), Ship(2),
-                           Ship(2), Ship(1), Ship(1), Ship(1), Ship(1)]
-        self.bot_stack = [Ship(4), Ship(3), Ship(3), Ship(2), Ship(2), Ship(2),
-                          Ship(1), Ship(1), Ship(1), Ship(1)]
-        self.user_fleet = []
-        self.bot_fleet = []
-        self.bot_field.generate_bot_field(self)
+        self.user_stack = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
+        self.bot_stack = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
+        self.user_fleet = 0
+        self.bot_fleet = 0
+        self.generate_bot_field()
 
-    def is_ship_in_user_stack(self, ship_len):
-        for ship in self.user_stack:
-            if ship.length == ship_len:
+    def is_ship_in_stack(self, ship_len, player):
+        stack = self.bot_stack
+        if player == 'user':
+            stack = self.user_stack
+        for ship in stack:
+            if ship == ship_len:
                 return True
         return False
 
-    def is_ship_in_bot_stack(self, ship_len):
-        for ship in self.bot_stack:
-            if ship.length == ship_len:
+    def move_ship_to_fleet(self, ship_len, player):
+        stack = self.bot_stack
+        if player == 'user':
+            stack = self.user_stack
+        for i in range(len(stack)):
+            if stack[i] == ship_len:
+                if player == 'user':
+                    self.user_fleet += stack.pop(i)
+                else:
+                    self.bot_fleet += stack.pop(i)
                 return True
         return False
 
-    def move_user_ship_to_fleet(self, ship_len):
-        for i in range(len(self.user_stack)):
-            if self.user_stack[i].length == ship_len:
-                self.user_fleet.append(self.user_stack.pop(i))
-                return True
-        return False
+    def delete_cell_from_fleet(self, player):
+        if player == 'user':
+            self.user_fleet -= 1
+        else:
+            self.bot_fleet -= 1
+
+    def generate_bot_field(self):
+        random.seed()
+        while len(self.bot_stack) != 0:
+            ship = random.choice(self.bot_stack)
+            rotation = random.choice(['ver', 'hor'])
+            x = random.randrange(self.bot_field.width)
+            y = random.randrange(self.bot_field.height)
+            cells_to_take = []
+            if rotation == 'ver':
+                for i in range(ship):
+                    cells_to_take.append((x, y + i))
+            elif rotation == 'hor':
+                for i in range(ship):
+                    cells_to_take.append((x + i, y))
+            self.bot_field.place_ship_on_field(cells_to_take, self, 'bot')
 
 
 # TODO all methods return strings, not print them
 class Field:
-    def __init__(self, width, high):
+    def __init__(self, width, height):
         self.width = width
-        self.high = high
+        self.height = height
         self.field = []
         for x in range(width):
             self.field.append([])
-            for y in range(high):
+            for y in range(height):
                 self.field[x].append(Cell(x, y))
 
-    def fire_cell(self, x, y):
+    def fire_cell(self, x, y, env):
         if self.field[x][y].state == CellState.ship:
             self.field[x][y].state = CellState.fired
-            if self.is_dead(x, y, x, y):
+            env.delete_cell_from_fleet('bot')
+            if self.is_ship_dead(x, y, x, y):
                 return 'You destroyed bot\'s ship!'
             else:
                 return 'You hit the bot\'s ship!'
@@ -58,52 +83,52 @@ class Field:
         else:
             return 'You can\'t shoot there!'
 
-    def is_dead(self, x, y, prev_x, prev_y):
+    def is_ship_dead(self, x, y, prev_x, prev_y):
         ceil_x = min(x + 2, self.width)
         floor_x = max(x - 1, 0)
-        ceil_y = min(y + 2, self.high)
+        ceil_y = min(y + 2, self.height)
         floor_y = max(y - 1, 0)
         for i in range(floor_x, ceil_x):
             for j in range(floor_y, ceil_y):
                 if self.field[i][j].state == CellState.fired:
                     if self.field[i][j] != self.field[x][y] and self.field[i][
-                        j] != self.field[prev_x][prev_y]:
-                        if self.is_dead(i, j, x, y):
+                            j] != self.field[prev_x][prev_y]:
+                        if self.is_ship_dead(i, j, x, y):
                             continue
                         else:
                             return False
-                elif self.field[i][j].state != CellState.empty:
+                elif self.field[i][j].state == CellState.ship:
                     return False
         self.field[x][y].state = CellState.dead
         return True
 
-    def place_ship_on_field(self, cells_to_take, env):
+    def place_ship_on_field(self, cells_to_take, env, player):
         taken_cells = []
         ship_len = len(cells_to_take)
-        if not env.is_ship_in_user_stack(ship_len):
+        if not env.is_ship_in_stack(ship_len, player):
             print("You don't have a ship with length {}".format(
                 len(cells_to_take)))
-            return "Not OK"
+            return False
         for (x, y) in cells_to_take:
+            if x >= self.width or y >= self.height:
+                print("You can't place the ship here!")
+                return False
             ceil_x = min(x + 2, self.width)
             floor_x = max(x - 1, 0)
-            ceil_y = min(y + 2, self.high)
+            ceil_y = min(y + 2, self.height)
             floor_y = max(y - 1, 0)
             for i in range(floor_x, ceil_x):
                 for j in range(floor_y, ceil_y):
                     if self.field[i][j].state != CellState.empty and \
                             self.field[i][j] not in taken_cells:
                         print("You can't place the ship here!")
-                        return "Not OK"
+                        return False
             taken_cells.append(self.field[x][y])
         for cell in taken_cells:
             cell.state = CellState.ship
-        env.move_user_ship_to_fleet(ship_len)
+        env.move_ship_to_fleet(ship_len, player)
         print("Ship was placed successfully!")
-        return "OK"
-
-    def generate_bot_field(self, env):
-        self.place_ship_on_field([(1, 1), (1, 2)], env)
+        return True
 
 
 class Cell:
@@ -120,15 +145,6 @@ class Ship:
     def __init__(self, length):
         self.length = length
         self.rotation = Rotation.vertical
-
-    def __mul__(self, const):
-        res = []
-        for i in range(const):
-            res.append(self)
-        return res
-
-    def __str__(self):
-        return "'{}'".format(self.length)
 
     def rotate(self):
         self.rotation = Rotation(self.rotation % 2 + 1)

@@ -19,45 +19,27 @@ class Game:
         else:
             print('Unknown rotation!')
             return False
-        self.env.user_field.place_ship_on_field(cells_to_take, self.env)
+        self.env.user_field.place_ship_on_field(cells_to_take, self.env,
+                                                'user')
 
-    def show_user_field(self, n, m):
-        for x in range(m + 1):
-            if x == 0:
-                print(x, end='  ')
-            else:
-                print(x, end='  ')
+    def show_field(self, player):
+        field = self.env.bot_field
+        if player == 'user':
+            field = self.env.user_field
+        for x in range(self.env.user_field.width + 1):
+            print(x, end='  ')
         print()
-        for y in range(m):
+        for y in range(field.height):
             print(chr(ord('A') + y), end='  ')
-            for x in range(n):
-                if self.env.user_field.field[x][y].state == CellState.ship:
+            for x in range(field.width):
+                if field.field[x][
+                        y].state == CellState.ship:
                     print('S', end='  ')
-                elif self.env.user_field.field[x][y].state == CellState.fired:
+                elif field.field[x][y].state == CellState.fired:
                     print('F', end='  ')
-                elif self.env.user_field.field[x][y].state == CellState.dead:
+                elif field.field[x][y].state == CellState.dead:
                     print('D', end='  ')
-                elif self.env.user_field.field[x][y].state == CellState.missed:
-                    print('M', end='  ')
-                else:
-                    print('X', end='  ')
-            print()
-
-    def show_bot_field(self, n, m):
-        for x in range(m + 1):
-            if x == 0:
-                print(x, end='  ')
-            else:
-                print(x, end='  ')
-        print()
-        for y in range(m):
-            print(chr(ord('A') + y), end='  ')
-            for x in range(n):
-                if self.env.bot_field.field[x][y].state == CellState.fired:
-                    print('F', end='  ')
-                elif self.env.bot_field.field[x][y].state == CellState.dead:
-                    print('D', end='  ')
-                elif self.env.bot_field.field[x][y].state == CellState.missed:
+                elif field.field[x][y].state == CellState.missed:
                     print('M', end='  ')
                 else:
                     print('X', end='  ')
@@ -65,20 +47,23 @@ class Game:
 
     def fire(self, x, letter):
         y = ord(letter) - ord('A')
-        print(self.env.bot_field.fire_cell(x, y))
+        if len(self.env.user_stack) != 0:
+            print('You should place all your fleet before fire!')
+        else:
+            print(self.env.bot_field.fire_cell(x, y, self.env))
 
 
 # TODO mistakes check
 if __name__ == '__main__':
-    game = Game()
+    game = Game(10, 10)
     command = ''
     print('New game started. Enter command:')
-    while command != 'quit':
+    while command != 'quit' and command != 'bye':
         command = input()
         if command == 'show user':
-            game.show_user_field(10, 10)
+            game.show_field('user')
         elif command == 'show bot':
-            game.show_bot_field(10, 10)
+            game.show_field('bot')
         elif re.match(r'place \d [a-z]{3} \d{1,2} [A-Z]', command):
             split = command.split(' ')
             game.place_ship(int(split[1]), split[2], int(split[3]) - 1,
@@ -97,6 +82,6 @@ if __name__ == '__main__':
             print(' "dl" cell vertically or horizontally')
             print('fire [d l] - shoot in dl cell')
             print('quit - close the app')
-        elif command != 'quit':
+        elif command != 'quit' and command != 'bye':
             print("Command '{}' doesn't exist! Enter 'help' for help".format(
                 command))
