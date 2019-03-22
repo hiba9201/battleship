@@ -31,7 +31,7 @@ class Game:
         for y in range(m):
             print(chr(ord('A') + y), end='  ')
             for x in range(n):
-                if self.env.user_field.field[x][y].state == CellState.taken:
+                if self.env.user_field.field[x][y].state == CellState.ship:
                     print('S', end='  ')
                 elif self.env.user_field.field[x][y].state == CellState.fired:
                     print('F', end='  ')
@@ -65,14 +65,7 @@ class Game:
 
     def fire(self, x, letter):
         y = ord(letter) - ord('A')
-        if self.env.bot_field.field[x][y].state == CellState.taken:
-            self.env.bot_field.field[x][y].state = CellState.fired
-            print('You hit the bot\'s ship')
-        elif self.env.bot_field.field[x][y].state == CellState.empty:
-            self.env.bot_field.field[x][y].state = CellState.missed
-            print('You missed!')
-        else:
-            print('You can\'t shoot there!')
+        print(self.env.bot_field.fire_cell(x, y))
 
 
 # TODO mistakes check

@@ -14,14 +14,14 @@ class CellTest(unittest.TestCase):
 class FieldTest(unittest.TestCase):
     def test_place_1_ship(self):
         field = Field(5, 5)
-        field.field[1][1].state = CellState.taken
+        field.field[1][1].state = CellState.ship
         self.assertNotEqual(field.place_ship_on_field([(0, 0)]),
                             "OK")
         self.assertEqual(field.place_ship_on_field([(1, 3)]), "OK")
 
     def test_place_2_ship(self):
         field = Field(5, 5)
-        field.field[1][1].state = CellState.taken
+        field.field[1][1].state = CellState.ship
         self.assertNotEqual(
             field.place_ship_on_field([(0, 0), (0, 1)]), "OK")
         self.assertEqual(
