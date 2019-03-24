@@ -7,44 +7,45 @@ class Environment:
     def __init__(self, m, n):
         self.user_field = Field(m, n)
         self.bot_field = Field(m, n)
-        self.user_stack = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
-        self.bot_stack = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
-        self.user_fleet = 0
-        self.bot_fleet = 0
+        self._user_stack = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
+        self._bot_stack = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
+        self._user_fleet = 0
+        self._bot_fleet = 0
+        self._bot_fires = []
         self.generate_bot_field()
 
     def is_ship_in_stack(self, ship_len, player):
-        stack = self.bot_stack
+        stack = self._bot_stack
         if player == 'user':
-            stack = self.user_stack
+            stack = self._user_stack
         for ship in stack:
             if ship == ship_len:
                 return True
         return False
 
     def move_ship_to_fleet(self, ship_len, player):
-        stack = self.bot_stack
+        stack = self._bot_stack
         if player == 'user':
-            stack = self.user_stack
+            stack = self._user_stack
         for i in range(len(stack)):
             if stack[i] == ship_len:
                 if player == 'user':
-                    self.user_fleet += stack.pop(i)
+                    self._user_fleet += stack.pop(i)
                 else:
-                    self.bot_fleet += stack.pop(i)
+                    self._bot_fleet += stack.pop(i)
                 return True
         return False
 
     def delete_cell_from_fleet(self, player):
         if player == 'user':
-            self.user_fleet -= 1
+            self._user_fleet -= 1
         else:
-            self.bot_fleet -= 1
+            self._bot_fleet -= 1
 
     def generate_bot_field(self):
         random.seed()
-        while len(self.bot_stack) != 0:
-            ship = random.choice(self.bot_stack)
+        while len(self._bot_stack) != 0:
+            ship = random.choice(self._bot_stack)
             rotation = random.choice(['ver', 'hor'])
             x = random.randrange(self.bot_field.width)
             y = random.randrange(self.bot_field.height)
@@ -56,6 +57,13 @@ class Environment:
                 for i in range(ship):
                     cells_to_take.append((x + i, y))
             self.bot_field.place_ship_on_field(cells_to_take, self, 'bot')
+
+    def random_fire(self):
+        result = ''
+        while result != 'You missed!':
+            x = random.randrange(self.user_field.width)
+            y = random.randrange(self.user_field.height)
+            result = self.user_field.fire_cell(x, y, self)
 
 
 # TODO all methods return strings, not print them
@@ -106,13 +114,11 @@ class Field:
         taken_cells = []
         ship_len = len(cells_to_take)
         if not env.is_ship_in_stack(ship_len, player):
-            print("You don't have a ship with length {}".format(
-                len(cells_to_take)))
-            return False
+            return "You don't have a ship with length {}".format(
+                len(cells_to_take))
         for (x, y) in cells_to_take:
             if x >= self.width or y >= self.height:
-                print("You can't place the ship here!")
-                return False
+                return "You can't place the ship here!"
             ceil_x = min(x + 2, self.width)
             floor_x = max(x - 1, 0)
             ceil_y = min(y + 2, self.height)
@@ -121,14 +127,12 @@ class Field:
                 for j in range(floor_y, ceil_y):
                     if self.field[i][j].state != CellState.empty and \
                             self.field[i][j] not in taken_cells:
-                        print("You can't place the ship here!")
-                        return False
+                        return "You can't place the ship here!"
             taken_cells.append(self.field[x][y])
         for cell in taken_cells:
             cell.state = CellState.ship
         env.move_ship_to_fleet(ship_len, player)
-        print("Ship was placed successfully!")
-        return True
+        return "Ship was placed successfully!"
 
 
 class Cell:

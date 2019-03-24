@@ -19,8 +19,8 @@ class Game:
         else:
             print('Unknown rotation!')
             return False
-        self.env.user_field.place_ship_on_field(cells_to_take, self.env,
-                                                'user')
+        print(self.env.user_field.place_ship_on_field(cells_to_take, self.env,
+                                                      'user'))
 
     def show_field(self, player):
         field = self.env.bot_field
@@ -33,7 +33,7 @@ class Game:
             print(chr(ord('A') + y), end='  ')
             for x in range(field.width):
                 if field.field[x][
-                        y].state == CellState.ship:
+                    y].state == CellState.ship:
                     print('S', end='  ')
                 elif field.field[x][y].state == CellState.fired:
                     print('F', end='  ')
@@ -47,10 +47,19 @@ class Game:
 
     def fire(self, x, letter):
         y = ord(letter) - ord('A')
-        if len(self.env.user_stack) != 0:
+        if len(self.env._user_stack) != 0:
             print('You should place all your fleet before fire!')
         else:
-            print(self.env.bot_field.fire_cell(x, y, self.env))
+            result = self.env.bot_field.fire_cell(x, y, self.env)
+            print(result)
+            if result == "You destroyed bot\'s ship!" or \
+                    result == 'You hit the bot\'s ship!':
+                return True
+            else:
+                return False
+
+    def bot_fire(self):
+        self.env.random_fire()
 
 
 # TODO mistakes check
@@ -70,7 +79,8 @@ if __name__ == '__main__':
                             split[4])
         elif re.match(r'fire \d{1,2} [A-Z]', command):
             split = command.split(' ')
-            game.fire(int(split[1]) - 1, split[2])
+            if not game.fire(int(split[1]) - 1, split[2]):
+                game.bot_fire()
         elif command == 'start new':
             game = Game()
         elif command == 'help':
