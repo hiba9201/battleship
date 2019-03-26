@@ -3,7 +3,6 @@ import re
 
 
 class Game:
-    # TODO mistakes check
     def __init__(self, m=10, n=10):
         self.env = Environment(m, n)
 
@@ -49,22 +48,27 @@ class Game:
         y = ord(letter) - ord('A')
         if not self.env.is_fleet_placed():
             print('You should place all your fleet before fire!')
+            return True
         else:
             result = self.env.bot_field.fire_cell(x, y, self.env, 'user')
             print(result)
             if result == "user destroyed bot's ship!" or \
-                    result == 'user hit the bot\'s ship!':
+                    result == 'user hit bot\'s ship!':
+                if self.env.is_player_defeated('bot'):
+                    print('user won!')
                 return True
             else:
                 return False
 
     def bot_fire(self):
         self.env.random_fire()
+        if self.env.is_player_defeated('user'):
+            print('bot won!')
 
 
 # TODO mistakes check
 if __name__ == '__main__':
-    game = Game(10, 10)
+    game = Game()
     command = ''
     print('New game started. Enter command:')
     while command != 'quit' and command != 'bye':
@@ -88,9 +92,9 @@ if __name__ == '__main__':
             print('about - info about the app')
             print('show [user | bot] - show chosen field')
             print('start new - start new game')
-            print('place [ship_len] [ver | hor] [d l] - place ship on', end='')
-            print(' "dl" cell vertically or horizontally')
-            print('fire [d l] - shoot in dl cell')
+            print('place [ship_len] [v | h] [d L] - place ship on', end='')
+            print(' "dL" cell vertically or horizontally')
+            print('fire [d L] - shoot in "dL" cell')
             print('quit - close the app')
         elif command != 'quit' and command != 'bye':
             print("Command '{}' doesn't exist! Enter 'help' for help".format(

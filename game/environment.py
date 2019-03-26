@@ -3,23 +3,28 @@ import random
 
 
 class Environment:
-    def __init__(self, m, n):
+    def __init__(self, m=10, n=10):
         self.user_field = Field(m, n)
         self.bot_field = Field(m, n)
-        self.user_stack = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
+        self._user_stack = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
         self._bot_stack = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
         self._user_fleet = 0
         self._bot_fleet = 0
         self._bot_fires = []
         self.generate_bot_field()
 
+    def is_player_defeated(self, player):
+        if player == 'user':
+            return self._user_fleet == 0
+        return self._bot_fleet == 0
+
     def is_fleet_placed(self):
-        return len(self.user_stack) == 0
+        return len(self._user_stack) == 0
 
     def is_ship_in_stack(self, ship_len, player):
         stack = self._bot_stack
         if player == 'user':
-            stack = self.user_stack
+            stack = self._user_stack
         for ship in stack:
             if ship == ship_len:
                 return True
@@ -28,7 +33,7 @@ class Environment:
     def move_ship_to_fleet(self, ship_len, player):
         stack = self._bot_stack
         if player == 'user':
-            stack = self.user_stack
+            stack = self._user_stack
         for i in range(len(stack)):
             if stack[i] == ship_len:
                 if player == 'user':
