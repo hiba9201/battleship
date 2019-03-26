@@ -1,4 +1,3 @@
-#! /bin/local/python3
 from enum import *
 import random
 
@@ -7,17 +6,20 @@ class Environment:
     def __init__(self, m, n):
         self.user_field = Field(m, n)
         self.bot_field = Field(m, n)
-        self._user_stack = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
+        self.user_stack = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
         self._bot_stack = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
         self._user_fleet = 0
         self._bot_fleet = 0
         self._bot_fires = []
         self.generate_bot_field()
 
+    def is_fleet_placed(self):
+        return len(self.user_stack) == 0
+
     def is_ship_in_stack(self, ship_len, player):
         stack = self._bot_stack
         if player == 'user':
-            stack = self._user_stack
+            stack = self.user_stack
         for ship in stack:
             if ship == ship_len:
                 return True
@@ -26,7 +28,7 @@ class Environment:
     def move_ship_to_fleet(self, ship_len, player):
         stack = self._bot_stack
         if player == 'user':
-            stack = self._user_stack
+            stack = self.user_stack
         for i in range(len(stack)):
             if stack[i] == ship_len:
                 if player == 'user':
@@ -46,27 +48,28 @@ class Environment:
         random.seed()
         while len(self._bot_stack) != 0:
             ship = random.choice(self._bot_stack)
-            rotation = random.choice(['ver', 'hor'])
+            rotation = random.choice(('v', 'h'))
             x = random.randrange(self.bot_field.width)
             y = random.randrange(self.bot_field.height)
             cells_to_take = []
-            if rotation == 'ver':
+            if rotation == 'v':
                 for i in range(ship):
                     cells_to_take.append((x, y + i))
-            elif rotation == 'hor':
+            elif rotation == 'h':
                 for i in range(ship):
                     cells_to_take.append((x + i, y))
             self.bot_field.place_ship_on_field(cells_to_take, self, 'bot')
 
     def random_fire(self):
         result = ''
-        while result != 'You missed!':
+        while result != 'bot missed!':
             x = random.randrange(self.user_field.width)
             y = random.randrange(self.user_field.height)
-            result = self.user_field.fire_cell(x, y, self)
+            result = self.user_field.fire_cell(x, y, self, 'bot')
+            if result != "bot can't shoot there!":
+                print(result)
 
 
-# TODO all methods return strings, not print them
 class Field:
     def __init__(self, width, height):
         self.width = width
@@ -77,19 +80,22 @@ class Field:
             for y in range(height):
                 self.field[x].append(Cell(x, y))
 
-    def fire_cell(self, x, y, env):
+    def fire_cell(self, x, y, env, player):
+        enemy = 'user'
+        if player == 'user':
+            enemy = 'bot'
         if self.field[x][y].state == CellState.ship:
             self.field[x][y].state = CellState.fired
-            env.delete_cell_from_fleet('bot')
+            env.delete_cell_from_fleet(enemy)
             if self.is_ship_dead(x, y, x, y):
-                return 'You destroyed bot\'s ship!'
+                return f'{player} destroyed {enemy}\'s ship!'
             else:
-                return 'You hit the bot\'s ship!'
+                return f'{player} hit {enemy}\'s ship!'
         elif self.field[x][y].state == CellState.empty:
             self.field[x][y].state = CellState.missed
-            return 'You missed!'
+            return f'{player} missed!'
         else:
-            return 'You can\'t shoot there!'
+            return f'{player} can\'t shoot there!'
 
     def is_ship_dead(self, x, y, prev_x, prev_y):
         ceil_x = min(x + 2, self.width)
@@ -99,8 +105,8 @@ class Field:
         for i in range(floor_x, ceil_x):
             for j in range(floor_y, ceil_y):
                 if self.field[i][j].state == CellState.fired:
-                    if self.field[i][j] != self.field[x][y] and self.field[i][
-                            j] != self.field[prev_x][prev_y]:
+                    if self.field[i][j] != self.field[x][y] and \
+                            self.field[i][j] != self.field[prev_x][prev_y]:
                         if self.is_ship_dead(i, j, x, y):
                             continue
                         else:

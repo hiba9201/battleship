@@ -10,10 +10,10 @@ class Game:
     def place_ship(self, ship_len, rotation, x, letter):
         y = ord(letter) - ord('A')
         cells_to_take = []
-        if rotation == 'ver':
+        if rotation == 'v':
             for i in range(ship_len):
                 cells_to_take.append((x, y + i))
-        elif rotation == 'hor':
+        elif rotation == 'h':
             for i in range(ship_len):
                 cells_to_take.append((x + i, y))
         else:
@@ -32,8 +32,8 @@ class Game:
         for y in range(field.height):
             print(chr(ord('A') + y), end='  ')
             for x in range(field.width):
-                if field.field[x][
-                    y].state == CellState.ship:
+                if (field.field[x][y].state, player) == (
+                        CellState.ship, 'user'):
                     print('S', end='  ')
                 elif field.field[x][y].state == CellState.fired:
                     print('F', end='  ')
@@ -47,13 +47,13 @@ class Game:
 
     def fire(self, x, letter):
         y = ord(letter) - ord('A')
-        if len(self.env._user_stack) != 0:
+        if not self.env.is_fleet_placed():
             print('You should place all your fleet before fire!')
         else:
-            result = self.env.bot_field.fire_cell(x, y, self.env)
+            result = self.env.bot_field.fire_cell(x, y, self.env, 'user')
             print(result)
-            if result == "You destroyed bot\'s ship!" or \
-                    result == 'You hit the bot\'s ship!':
+            if result == "user destroyed bot's ship!" or \
+                    result == 'user hit the bot\'s ship!':
                 return True
             else:
                 return False
@@ -73,7 +73,7 @@ if __name__ == '__main__':
             game.show_field('user')
         elif command == 'show bot':
             game.show_field('bot')
-        elif re.match(r'place \d [a-z]{3} \d{1,2} [A-Z]', command):
+        elif re.match(r'place \d [v|h] \d{1,2} [A-Z]', command):
             split = command.split(' ')
             game.place_ship(int(split[1]), split[2], int(split[3]) - 1,
                             split[4])
