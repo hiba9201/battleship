@@ -57,6 +57,8 @@ class Game:
                 if self.env.is_player_defeated('bot'):
                     print('user won!')
                 return True
+            elif result == "user can't shoot there!":
+                return True
             else:
                 return False
 

@@ -86,6 +86,8 @@ class Field:
                 self.field[x].append(Cell(x, y))
 
     def fire_cell(self, x, y, env, player):
+        if x >= self.width or y > self.height or x < 0 or y < 0:
+            return f'{player} can\'t shoot there!'
         enemy = 'user'
         if player == 'user':
             enemy = 'bot'
@@ -128,7 +130,7 @@ class Field:
             return "You don't have a ship with length {}".format(
                 len(cells_to_take))
         for (x, y) in cells_to_take:
-            if x >= self.width or y >= self.height:
+            if x >= self.width or y >= self.height or x < 0 or y < 0:
                 return "You can't place the ship here!"
             ceil_x = min(x + 2, self.width)
             floor_x = max(x - 1, 0)
