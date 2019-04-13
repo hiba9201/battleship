@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../../Пары/8_04/.idea/8_04.iml" filepath="$PROJECT_DIR$/../../Пары/8_04/.idea/8_04.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../Hexagon_field/.idea/Hexagon_field.iml" filepath="$PROJECT_DIR$/../../Hexagon_field/.idea/Hexagon_field.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/battlebee.iml" filepath="$PROJECT_DIR$/.idea/battlebee.iml" />
     </modules>
   </component>

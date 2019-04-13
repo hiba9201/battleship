@@ -173,7 +173,7 @@ class Honeycomb:
             return f"{player} don't have a ship with length {cells_to_take}"
         for (x, y) in cells_to_take:
             if not self.is_in_bound(x, y):
-                return f"{player} can't place the ship here!"
+                return f"{player} can't place ship there!"
 
             ceil_y = min(y + 2, self.side * 2 - 1)
             floor_y = max(y - 1, 0)
@@ -188,7 +188,7 @@ class Honeycomb:
                         continue
                     if self.field[j][i].state != CellState.empty and \
                             self.field[j][i] not in taken_cells:
-                        return f"{player} can't place the ship here!"
+                        return f"{player} can't place ship there!"
             taken_cells.append(self.field[y][x])
         for cell in taken_cells:
             cell.state = CellState.ship

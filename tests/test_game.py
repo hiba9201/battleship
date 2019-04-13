@@ -1,5 +1,5 @@
 import unittest
-from game.environment import *
+from game.environment import Honeycomb, Environment, Cell, CellState
 
 
 class CellTest(unittest.TestCase):
@@ -35,7 +35,7 @@ class EnvironmentTest(unittest.TestCase):
 
 class HoneycombTest(unittest.TestCase):
     def test_place_1_ship(self):
-        env = Environment(5)
+        env = Environment(5, 2)
         env.user_field.field[1][1].state = CellState.ship
         self.assertNotEqual(
             env.user_field.place_ship_on_field([(0, 0)], env, 'user'),
@@ -45,7 +45,7 @@ class HoneycombTest(unittest.TestCase):
             "ship was placed successfully!")
 
     def test_place_2_ship(self):
-        env = Environment(5)
+        env = Environment(5, 2)
         env.user_field.field[1][1].state = CellState.ship
         self.assertNotEqual(
             env.user_field.place_ship_on_field([(0, 0), (0, 1)], env, 'user'),
@@ -62,7 +62,7 @@ class HoneycombTest(unittest.TestCase):
         self.assertFalse(field.is_in_bound(4, 6))
 
     def test_fire_not_destroyed(self):
-        env = Environment(5)
+        env = Environment(5, 2)
         env.user_field.place_ship_on_field([(0, 0), (0, 1)], env, 'user')
         state = env.user_field.fire_cell(0, 0, env, 'bot')
         self.assertFalse(env.is_player_defeated('user'))
