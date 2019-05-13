@@ -40,22 +40,22 @@ class Game:
             print('you should place all your fleet before fire!')
             return True
         else:
-            result = self.env.bot_field.fire_cell(x, y, self.env, 'user')
-            print(result)
-            if result == "user destroyed bot's ship!" or \
-                    result == 'user hit bot\'s ship!':
-                if self.env.is_player_defeated('bot'):
+            result = self.env.bot_field.fire_cell(x, y, self.env, env.Player.USER)
+            print(env.Player.USER, result)
+            if result == env.FireResult.DESTROYED or \
+                    result == env.FireResult.HIT:
+                if self.env.is_player_defeated(env.Player.BOT):
                     self.user_won = True
                     print('user won!')
                 return True
-            elif result == "user can't shoot there!":
+            elif result == env.FireResult.UNABLE:
                 return True
             else:
                 return False
 
     def bot_fire(self):
         self.env.bot_fire()
-        if self.env.is_player_defeated('user'):
+        if self.env.is_player_defeated(env.Player.USER):
             self.bot_won = True
             print('bot won!')
 

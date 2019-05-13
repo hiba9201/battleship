@@ -11,6 +11,21 @@ class CellState(enum.Enum):
     MISSED = 5
 
 
+class FireResult(enum.Enum):
+    UNABLE = 0
+    DESTROYED = 1
+    HIT = 2
+    MISSED = 3
+
+    def __str__(self):
+        res = self.name.lower()
+        if self.name == 'UNABLE':
+            res += ' to shoot there'
+        elif self.name != 'MISSED':
+            res += ' ship'
+        return res
+
+
 class Player(enum.Enum):
     USER = 0
     BOT = 1
@@ -45,8 +60,8 @@ class Environment:
 
     def is_player_defeated(self, player=Player.BOT):
         if player == Player.USER:
-            return self._user_fleet == 0 and len(self._user_hand) == 0
-        return self._bot_fleet == 0 and len(self._bot_hand) == 0
+            return self._user_fleet == 0 and not self._user_hand
+        return self._bot_fleet == 0 and not self._bot_hand
 
     def is_user_fleet_placed(self):
         return len(self._user_hand) == 0
@@ -96,12 +111,12 @@ class Environment:
 
     def bot_fire(self):
         result = ''
-        while result != 'bot missed!':
+        while result != FireResult.MISSED:
             y = random.randrange(self.user_field.side * 2 - 1)
             x = random.randrange(len(self.user_field.field[y]))
             result = self.user_field.fire_cell(x, y, self)
-            if result != "bot can't shoot there!":
-                print(result)
+            if result != FireResult.UNABLE:
+                print(Player.BOT, result)
 
 
 class Honeycomb:
@@ -160,16 +175,16 @@ class Honeycomb:
             return False
         if x < self.side:
             return 0 <= x < len(self.field[y])
-        else:
-            for cell in self.field[y]:
-                if cell.state != CellState.NOT_FIELD:
-                    index = self.field[y].index(cell)
-                    break
-            return index <= x < len(self.field[y])
+
+        for cell in self.field[y]:
+            if cell.state != CellState.NOT_FIELD:
+                index = self.field[y].index(cell)
+                break
+        return index <= x < len(self.field[y])
 
     def fire_cell(self, x, y, env, player=Player.BOT):
         if not self.is_in_bound(x, y):
-            return f'{player} can\'t shoot there!'
+            return FireResult.UNABLE # f'{player} can\'t shoot there!'
         enemy = Player.USER
         if player == Player.USER:
             enemy = Player.BOT
@@ -177,14 +192,14 @@ class Honeycomb:
             self.field[y][x].state = CellState.FIRED
             env.delete_cell_from_fleet(enemy)
             if self.is_ship_dead(x, y, x, y):
-                return f'{player} destroyed {enemy}\'s ship!'
+                return FireResult.DESTROYED # f'{player} destroyed {enemy}\'s ship!'
             else:
-                return f'{player} hit {enemy}\'s ship!'
+                return FireResult.HIT # f'{player} hit {enemy}\'s ship!'
         elif self.field[y][x].state == CellState.EMPTY:
             self.field[y][x].state = CellState.MISSED
-            return f'{player} missed!'
+            return FireResult.MISSED # f'{player} missed!'
         else:
-            return f'{player} can\'t shoot there!'
+            return FireResult.UNABLE # f'{player} can\'t shoot there!'
 
     def is_ship_dead(self, x, y, prev_x, prev_y):
         ceil_y = min(y + 2, self.side * 2 - 1)
@@ -224,12 +239,12 @@ class Honeycomb:
 
             for i in range(floor_x, ceil_x):
                 for j in range(floor_y, ceil_y):
-                    if (i == ceil_x and j == floor_y) or (
-                            j == ceil_y and i == floor_x
-                    ) or not self.is_in_bound(i, j):
+                    if ((i == ceil_x and j == floor_y) or
+                        (j == ceil_y and i == floor_x) or
+                            not self.is_in_bound(i, j)):
                         continue
-                    if self.field[j][i].state != CellState.EMPTY and \
-                            self.field[j][i] not in taken_cells:
+                    if (self.field[j][i].state != CellState.EMPTY and
+                            self.field[j][i] not in taken_cells):
                         return f"{player} can't place ship there!"
             taken_cells.append(self.field[y][x])
         for cell in taken_cells:
