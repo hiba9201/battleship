@@ -1,15 +1,23 @@
-from game.environment import *
 import re
+
+import game.environment as env
 
 
 class Game:
     def __init__(self, side=6):
-        self.env = Environment(side)
+        self.env = env.Environment(side)
         self.user_won = False
         self.bot_won = False
 
-    def place_ship(self, ship_len, rotation, x, letter):
-        y = ord(letter) - ord('A')
+    @staticmethod
+    def letters_to_number(letters):
+        res = 0
+        for i in range(len(letters)):
+            res += (ord(letters[i]) - ord('A')) * (26 ** i)
+        return res
+
+    def place_ship(self, ship_len, rotation, x, letters):
+        y = self.letters_to_number(letters)
         cells_to_take = []
         if rotation == 'vl':
             for i in range(ship_len):
@@ -22,43 +30,12 @@ class Game:
                 cells_to_take.append((x + i, y))
         else:
             print('unknown rotation!')
-            return False
+            return
         print(self.env.user_field.place_ship_on_field(cells_to_take, self.env,
-                                                      'user'))
+                                                      env.Player.USER))
 
-    def show_field(self, player):
-        field = self.env.bot_field
-        if player == 'user':
-            field = self.env.user_field
-        side_count = 0
-        count = 0
-        spaces_count = field.side * 2 - side_count
-        for y in range(field.side * 2 - 1):
-            print(' ' * spaces_count, end='')
-            for x in range(count, len(field.field[y])):
-                if (field.field[y][x].state, player) == (
-                        CellState.ship, 'user'):
-                    print('S', end='   ')
-                elif field.field[y][x].state == CellState.fired:
-                    print('F', end='   ')
-                elif field.field[y][x].state == CellState.dead:
-                    print('D', end='   ')
-                elif field.field[y][x].state == CellState.missed:
-                    print('M', end='   ')
-                elif field.field[y][x].state == CellState.not_field:
-                    print(' ', end='   ')
-                else:
-                    print('X', end='   ')
-            print()
-            if y < field.side - 1:
-                side_count += 1
-                spaces_count -= 2
-            else:
-                count += 1
-                spaces_count += 2
-
-    def fire_with_fire_turn(self, x, letter):
-        y = ord(letter) - ord('A')
+    def fire_with_fire_turn(self, x, letters):
+        y = self.letters_to_number(letters)
         if not self.env.is_user_fleet_placed():
             print('you should place all your fleet before fire!')
             return True
@@ -87,6 +64,8 @@ if __name__ == '__main__':
     game = Game()
     command = ''
     print('New game started. Enter command:')
+
+    # TODO separated class for command executor
     while command != 'quit' and command != 'bye':
         if game.user_won or game.bot_won:
             while command != 'y' and command != 'n':
@@ -99,9 +78,9 @@ if __name__ == '__main__':
 
         command = input()
         if command == 'show user':
-            game.show_field('user')
+            print(game.env.user_field)
         elif command == 'show bot':
-            game.show_field('bot')
+            print(game.env.bot_field)
         elif re.match(r'place \d \w{1,2} \d{1,2} [A-Z]', command):
             split = command.split(' ')
             game.place_ship(int(split[1]), split[2], int(split[3]) - 1,

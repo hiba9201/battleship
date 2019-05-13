@@ -36,7 +36,7 @@ class EnvironmentTest(unittest.TestCase):
 class HoneycombTest(unittest.TestCase):
     def test_place_1_ship(self):
         env = Environment(5, 2)
-        env.user_field.field[1][1].state = CellState.ship
+        env.user_field.field[1][1].state = CellState.SHIP
         self.assertNotEqual(
             env.user_field.place_ship_on_field([(0, 0)], env, 'user'),
             "ship was placed successfully!")
@@ -46,7 +46,7 @@ class HoneycombTest(unittest.TestCase):
 
     def test_place_2_ship(self):
         env = Environment(5, 2)
-        env.user_field.field[1][1].state = CellState.ship
+        env.user_field.field[1][1].state = CellState.SHIP
         self.assertNotEqual(
             env.user_field.place_ship_on_field([(0, 0), (0, 1)], env, 'user'),
             "ship was placed successfully!")

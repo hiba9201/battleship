@@ -1,30 +1,39 @@
-from enum import *
+import enum
 import random
 
 
-class CellState(Enum):
-    not_field = 0
-    empty = 1
-    fired = 2
-    dead = 3
-    ship = 4
-    missed = 5
+class CellState(enum.Enum):
+    NOT_FIELD = 0
+    EMPTY = 1
+    FIRED = 2
+    DEAD = 3
+    SHIP = 4
+    MISSED = 5
+
+
+class Player(enum.Enum):
+    USER = 0
+    BOT = 1
+
+    def __str__(self):
+        return self.name.lower()
 
 
 class Cell:
-    def __init__(self, x, y, state=CellState.empty):
+    def __init__(self, x, y, state=CellState.EMPTY):
         self.x = x
         self.y = y
         self.state = state
 
     def __ne__(self, other):
-        return self.x != other.x or self.y != other.y
+        return (self.x, self.y) != (other.x, other.y)
 
 
 class Environment:
+    # TODO configurable fleet
     def __init__(self, side=7, ship_max=4):
-        self.user_field = Honeycomb(side)
-        self.bot_field = Honeycomb(side)
+        self.user_field = Honeycomb(side, Player.USER)
+        self.bot_field = Honeycomb(side, Player.BOT)
         self._user_hand = [ship_max - x for x in range(ship_max) for _ in
                            range(x + 1)]
         self._bot_hand = [ship_max - x for x in range(ship_max) for _ in
@@ -34,38 +43,38 @@ class Environment:
         self._bot_fires = []  # TODO optimize bot's shooting
         self.generate_bot_field()
 
-    def is_player_defeated(self, player):
-        if player == 'user':
+    def is_player_defeated(self, player=Player.BOT):
+        if player == Player.USER:
             return self._user_fleet == 0 and len(self._user_hand) == 0
         return self._bot_fleet == 0 and len(self._bot_hand) == 0
 
     def is_user_fleet_placed(self):
         return len(self._user_hand) == 0
 
-    def is_ship_in_stack(self, ship_len, player):
+    def is_ship_in_stack(self, ship_len, player=Player.BOT):
         stack = self._bot_hand
-        if player == 'user':
+        if player == Player.USER:
             stack = self._user_hand
         for ship in stack:
             if ship == ship_len:
                 return True
         return False
 
-    def move_ship_to_fleet(self, ship_len, player):
+    def move_ship_to_fleet(self, ship_len, player=Player.BOT):
         stack = self._bot_hand
-        if player == 'user':
+        if player == Player.USER:
             stack = self._user_hand
         for i in range(len(stack)):
             if stack[i] == ship_len:
-                if player == 'user':
+                if player == Player.USER:
                     self._user_fleet += stack.pop(i)
                 else:
                     self._bot_fleet += stack.pop(i)
                 return True
         return False
 
-    def delete_cell_from_fleet(self, player):
-        if player == 'user':
+    def delete_cell_from_fleet(self, player=Player.BOT):
+        if player == Player.USER:
             self._user_fleet -= 1
         else:
             self._bot_fleet -= 1
@@ -83,29 +92,30 @@ class Environment:
                 cells_to_take = [(x + i, y + i) for i in range(ship_len)]
             else:
                 cells_to_take = [(x + i, y) for i in range(ship_len)]
-            self.bot_field.place_ship_on_field(cells_to_take, self, 'bot')
+            self.bot_field.place_ship_on_field(cells_to_take, self)
 
     def bot_fire(self):
         result = ''
         while result != 'bot missed!':
             y = random.randrange(self.user_field.side * 2 - 1)
             x = random.randrange(len(self.user_field.field[y]))
-            result = self.user_field.fire_cell(x, y, self, 'bot')
+            result = self.user_field.fire_cell(x, y, self)
             if result != "bot can't shoot there!":
                 print(result)
 
 
 class Honeycomb:
-    def __init__(self, side):
+    def __init__(self, side, player):
         self.side = side
         self.field = []
+        self.owner = player
         side_count = 0
         count = 0
         for y in range(side * 2 - 1):
             self.field.append([])
             for x in range(side + side_count):
                 if y >= self.side - 1 and x < count:
-                    self.field[y].append(Cell(x, y, CellState.not_field))
+                    self.field[y].append(Cell(x, y, CellState.NOT_FIELD))
                 else:
                     self.field[y].append(Cell(x, y))
             if y < self.side - 1:
@@ -113,33 +123,65 @@ class Honeycomb:
             else:
                 count += 1
 
+    def __str__(self):
+        side_count = 0
+        count = 0
+        spaces_count = self.side * 2 - side_count
+        res = ''
+        for y in range(self.side * 2 - 1):
+            res += ' ' * spaces_count
+            for x in range(count, len(self.field[y])):
+                if (self.field[y][x].state, self.owner) == (
+                        CellState.SHIP, Player.USER):
+                    res += 'S'
+                elif self.field[y][x].state == CellState.FIRED:
+                    res += 'F'
+                elif self.field[y][x].state == CellState.DEAD:
+                    res += 'D'
+                elif self.field[y][x].state == CellState.MISSED:
+                    res += 'M'
+                elif self.field[y][x].state == CellState.NOT_FIELD:
+                    res += ' '
+                else:
+                    res += 'X'
+                res += '   '
+            res += '\n'
+            if y < self.side - 1:
+                side_count += 1
+                spaces_count -= 2
+            else:
+                count += 1
+                spaces_count += 2
+        return res
+
     def is_in_bound(self, x, y):
+        global index
         if not 0 <= y < (self.side * 2 - 1):
             return False
         if x < self.side:
             return 0 <= x < len(self.field[y])
         else:
             for cell in self.field[y]:
-                if cell.state != CellState.not_field:
+                if cell.state != CellState.NOT_FIELD:
                     index = self.field[y].index(cell)
                     break
             return index <= x < len(self.field[y])
 
-    def fire_cell(self, x, y, env, player):
+    def fire_cell(self, x, y, env, player=Player.BOT):
         if not self.is_in_bound(x, y):
             return f'{player} can\'t shoot there!'
-        enemy = 'user'
-        if player == 'user':
-            enemy = 'bot'
-        if self.field[y][x].state == CellState.ship:
-            self.field[y][x].state = CellState.fired
+        enemy = Player.USER
+        if player == Player.USER:
+            enemy = Player.BOT
+        if self.field[y][x].state == CellState.SHIP:
+            self.field[y][x].state = CellState.FIRED
             env.delete_cell_from_fleet(enemy)
             if self.is_ship_dead(x, y, x, y):
                 return f'{player} destroyed {enemy}\'s ship!'
             else:
                 return f'{player} hit {enemy}\'s ship!'
-        elif self.field[y][x].state == CellState.empty:
-            self.field[y][x].state = CellState.missed
+        elif self.field[y][x].state == CellState.EMPTY:
+            self.field[y][x].state = CellState.MISSED
             return f'{player} missed!'
         else:
             return f'{player} can\'t shoot there!'
@@ -154,23 +196,23 @@ class Honeycomb:
                 if (i, j) == (floor_y, ceil_x) or (i, j) == (
                         ceil_y, floor_x) or not self.is_in_bound(j, i):
                     continue
-                if self.field[i][j].state == CellState.fired:
+                if self.field[i][j].state == CellState.FIRED:
                     if self.field[i][j] != self.field[y][x] and \
                             self.field[i][j] != self.field[prev_y][prev_x]:
                         if self.is_ship_dead(j, i, x, y):
                             continue
                         else:
                             return False
-                elif self.field[i][j].state == CellState.ship:
+                elif self.field[i][j].state == CellState.SHIP:
                     return False
-        self.field[y][x].state = CellState.dead
+        self.field[y][x].state = CellState.DEAD
         return True
 
-    def place_ship_on_field(self, cells_to_take, env, player):
+    def place_ship_on_field(self, cells_to_take, env, player=Player.BOT):
         taken_cells = []
         ship_len = len(cells_to_take)
         if not env.is_ship_in_stack(ship_len, player):
-            return f"{player} don't have a ship with length {cells_to_take}"
+            return f"{player} doesn't have a ship with length {ship_len}"
         for (x, y) in cells_to_take:
             if not self.is_in_bound(x, y):
                 return f"{player} can't place ship there!"
@@ -186,11 +228,11 @@ class Honeycomb:
                             j == ceil_y and i == floor_x
                     ) or not self.is_in_bound(i, j):
                         continue
-                    if self.field[j][i].state != CellState.empty and \
+                    if self.field[j][i].state != CellState.EMPTY and \
                             self.field[j][i] not in taken_cells:
                         return f"{player} can't place ship there!"
             taken_cells.append(self.field[y][x])
         for cell in taken_cells:
-            cell.state = CellState.ship
+            cell.state = CellState.SHIP
         env.move_ship_to_fleet(ship_len, player)
-        return "ship was placed successfully!"
+        return "Ship was placed successfully!"
