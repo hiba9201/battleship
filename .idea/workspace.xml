@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="6a7e5870-0781-4430-bd0e-efcacecddaef" name="Default Changelist" comment="!">
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cbattlebee.py" beforeDir="false" afterPath="$PROJECT_DIR$/cbattlebee.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/environment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_game.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_game.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,16 +14,18 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/battleship$Unittests_for_environment_tests_FieldTest_test_fire_destroyed.coverage" NAME="Unittests for environment_tests.FieldTest.test_fire_destroyed Coverage Results" MODIFIED="1555123945347" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battleship$Unittests_for_game_tests_FieldTest_test_place_1_ship.coverage" NAME="Unittests for game_tests.FieldTest.test_place_1_ship Coverage Results" MODIFIED="1553159927597" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/battlebee$Unittests_for_test_game_HoneycombTest_test_fire_destroyed.coverage" NAME="Unittests for test_game.HoneycombTest.test_fire_destroyed Coverage Results" MODIFIED="1555159828030" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/battlebee$Unittests_for_test_game_HoneycombTest_test_fire_not_destroyed.coverage" NAME="Unittests for test_game.HoneycombTest.test_fire_not_destroyed Coverage Results" MODIFIED="1555159844079" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/battlebee$Unittests_for_test_game_HoneycombTest_test_fire_destroyed.coverage" NAME="Unittests for test_game.HoneycombTest.test_fire_destroyed Coverage Results" MODIFIED="1557824309444" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battlebee$Unittests_for_test_game_HoneycombTest.coverage" NAME="Unittests for test_game.HoneycombTest Coverage Results" MODIFIED="1555159898817" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/battlebee$Unittests_for_test_game_HoneycombTest_test_fire_not_destroyed.coverage" NAME="Unittests for test_game.HoneycombTest.test_fire_not_destroyed Coverage Results" MODIFIED="1557824307134" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battlebee$Unittests_for_game_tests_EnvironmentTest_test_player_defeated.coverage" NAME="Unittests for game_tests.EnvironmentTest.test_player_defeated Coverage Results" MODIFIED="1555124597859" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battlebee$Unittests_in_game_tests_py.coverage" NAME="Unittests in game_tests.py Coverage Results" MODIFIED="1555135164954" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/battlebee$Unittests_for_test_game_HoneycombTest_test_place_1_ship.coverage" NAME="Unittests for test_game.HoneycombTest.test_place_1_ship Coverage Results" MODIFIED="1557824194222" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battleship$Unittests_for_environment_tests_FieldTest_test_place_2_ship.coverage" NAME="Unittests for environment_tests.FieldTest.test_place_2_ship Coverage Results" MODIFIED="1555123187441" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battleship$Unittests_for_game_tests_ShipTests_test_multiply.coverage" NAME="Unittests for game_tests.ShipTests.test_multiply Coverage Results" MODIFIED="1553068072847" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battlebee$Unittests_for_test_game_HoneycombTest_test_place_2_ship.coverage" NAME="Unittests for test_game.HoneycombTest.test_place_2_ship Coverage Results" MODIFIED="1555159894769" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battlebee$Unittests_for_game_tests_CellTest.coverage" NAME="Unittests for game_tests.CellTest Coverage Results" MODIFIED="1555135183438" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battleship$game.coverage" NAME="game Coverage Results" MODIFIED="1552915243781" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/battlebee$Unittests_for_test_game_CellTest.coverage" NAME="Unittests for test_game.CellTest Coverage Results" MODIFIED="1557823880253" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battleship$Unittests_for_game_tests_FieldTest.coverage" NAME="Unittests for game_tests.FieldTest Coverage Results" MODIFIED="1553160103952" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battlebee$cbattlebee.coverage" NAME="cbattlebee Coverage Results" MODIFIED="1557820197078" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/battlebee$Unittests_for_game_tests_EnvironmentTest.coverage" NAME="Unittests for game_tests.EnvironmentTest Coverage Results" MODIFIED="1555135190931" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
@@ -33,6 +34,7 @@
     <SUITE FILE_PATH="coverage/battleship$Unittests_for_game_tests_FieldTest_test_add_cell.coverage" NAME="Unittests for game_tests.FieldTest.test_add_cell Coverage Results" MODIFIED="1553067136616" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battleship$Unittests_for_environment_tests_FieldTest.coverage" NAME="Unittests for environment_tests.FieldTest Coverage Results" MODIFIED="1555123585253" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battlebee$Unittests_for_game_tests_HoneycombTest_test_fire_destroyed.coverage" NAME="Unittests for game_tests.HoneycombTest.test_fire_destroyed Coverage Results" MODIFIED="1555135212735" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/battlebee$Unittests_for_test_game_HoneycombTest_test_bound.coverage" NAME="Unittests for test_game.HoneycombTest.test_bound Coverage Results" MODIFIED="1557824239589" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battleship$battleship.coverage" NAME="battleship Coverage Results" MODIFIED="1552917867883" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/battleship$main.coverage" NAME="main Coverage Results" MODIFIED="1554704749502" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../Пары/8_04" />
     <SUITE FILE_PATH="coverage/battlebee$Unittests_for_game_tests_EnvironmentTest_test_fleet_placement.coverage" NAME="Unittests for game_tests.EnvironmentTest.test_fleet_placement Coverage Results" MODIFIED="1555124769273" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
@@ -42,60 +44,81 @@
     <SUITE FILE_PATH="coverage/battleship$Unittests_for_environment_tests_FieldTest_test_fire_not_destroyed.coverage" NAME="Unittests for environment_tests.FieldTest.test_fire_not_destroyed Coverage Results" MODIFIED="1555123912161" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battlebee$Unittests_for_game_tests_HoneycombTest.coverage" NAME="Unittests for game_tests.HoneycombTest Coverage Results" MODIFIED="1555135195935" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battlebee$Unittests_for_game_tests_HoneycombTest_test_place_2_ship.coverage" NAME="Unittests for game_tests.HoneycombTest.test_place_2_ship Coverage Results" MODIFIED="1555135218192" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/battlebee$Unittests_for_test_game_EnvironmentTest_test_player_defeated.coverage" NAME="Unittests for test_game.EnvironmentTest.test_player_defeated Coverage Results" MODIFIED="1557824064198" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battlebee$Unittests_for_game_tests_EnvironmentTest_test_player_have_ship.coverage" NAME="Unittests for game_tests.EnvironmentTest.test_player_have_ship Coverage Results" MODIFIED="1555125034303" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battleship$Unittests_for_game_tests_FieldTest_test_set_ship.coverage" NAME="Unittests for game_tests.FieldTest.test_set_ship Coverage Results" MODIFIED="1553066353574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battleship$cbattleship.coverage" NAME="cbattleship Coverage Results" MODIFIED="1555124079507" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/battleship$Unittests_for_environment_tests_CellTest.coverage" NAME="Unittests for environment_tests.CellTest Coverage Results" MODIFIED="1555123950544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/battlebee$Unittests_for_test_game_EnvironmentTest.coverage" NAME="Unittests for test_game.EnvironmentTest Coverage Results" MODIFIED="1555145821462" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/battlebee$Unittests_for_test_game_EnvironmentTest.coverage" NAME="Unittests for test_game.EnvironmentTest Coverage Results" MODIFIED="1557824115142" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battleship$field.coverage" NAME="field Coverage Results" MODIFIED="1555121915609" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../Hexagon_field" />
     <SUITE FILE_PATH="coverage/battleship$Unittests_for_game_tests_CellTest_test_is_cell_near.coverage" NAME="Unittests for game_tests.CellTest.test_is_cell_near Coverage Results" MODIFIED="1553064778177" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/battleship$Unittests_in_game_tests_py.coverage" NAME="Unittests in game_tests.py Coverage Results" MODIFIED="1553068204582" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/environment.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="560">
-              <caret line="266" column="65" selection-start-line="266" selection-start-column="65" selection-end-line="266" selection-end-column="65" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/cbattlebee.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1014">
-              <caret line="171" column="30" lean-forward="true" selection-start-line="171" selection-start-column="30" selection-end-line="171" selection-end-column="30" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-                <element signature="e#2972#3172#0" />
-                <element signature="e#2894#3196#0" />
-                <element signature="e#3183#3432#0" />
-                <element signature="e#3480#3776#0" />
-                <element signature="e#3998#4167#0" />
-                <element signature="e#3864#4251#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="443">
-                <caret line="34" column="5" lean-forward="true" selection-start-line="34" selection-start-column="5" selection-end-line="34" selection-end-column="5" />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.5">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/game/environment.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="1663">
+                  <caret line="266" column="65" selection-start-line="266" selection-start-column="65" selection-end-line="266" selection-end-column="65" />
+                  <folding>
+                    <element signature="e#0#11#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/cbattlebee.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="1014">
+                  <caret line="171" column="30" lean-forward="true" selection-start-line="171" selection-start-column="30" selection-end-line="171" selection-end-column="30" />
+                  <folding>
+                    <element signature="e#0#9#0" expanded="true" />
+                    <element signature="e#2972#3172#0" />
+                    <element signature="e#2894#3196#0" />
+                    <element signature="e#3183#3432#0" />
+                    <element signature="e#3480#3776#0" />
+                    <element signature="e#3998#4167#0" />
+                    <element signature="e#3864#4251#0" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/README.md">
+              <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+                <state split_layout="SPLIT">
+                  <first_editor relative-caret-position="523">
+                    <caret line="53" column="8" selection-start-line="53" selection-start-column="8" selection-end-line="53" selection-end-column="8" />
+                  </first_editor>
+                  <second_editor />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/tests/test_game.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="82">
+                  <caret line="76" column="52" selection-start-line="76" selection-start-column="52" selection-end-line="76" selection-end-column="52" />
+                  <folding>
+                    <element signature="e#0#15#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -130,10 +153,10 @@
         <option value="$PROJECT_DIR$/tests/game_tests.py" />
         <option value="$PROJECT_DIR$/test/test_game.py" />
         <option value="$PROJECT_DIR$/game/__init__.py" />
-        <option value="$PROJECT_DIR$/tests/test_game.py" />
         <option value="$PROJECT_DIR$/game/environment.py" />
         <option value="$PROJECT_DIR$/cbattlebee.py" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/tests/test_game.py" />
       </list>
     </option>
   </component>
@@ -199,30 +222,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.cbattlebee">
-    <configuration name="cbattlebee" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="battlebee" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/cbattlebee.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Unittests for test_game.HoneycombTest" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python tests.Unittests for test_game.HoneycombTest.test_fire_destroyed">
+    <configuration name="Unittests for test_game.EnvironmentTest" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="battlebee" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -233,7 +234,22 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_game.HoneycombTest&quot;" />
+      <option name="_new_target" value="&quot;test_game.EnvironmentTest&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unittests for test_game.HoneycombTest.test_bound" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <module name="battlebee" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_game.HoneycombTest.test_bound&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -267,7 +283,7 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests for test_game.HoneycombTest.test_place_2_ship" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for test_game.HoneycombTest.test_place_1_ship" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="battlebee" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -278,17 +294,17 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_game.HoneycombTest.test_place_2_ship&quot;" />
+      <option name="_new_target" value="&quot;test_game.HoneycombTest.test_place_1_ship&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.cbattlebee" />
-        <item itemvalue="Python tests.Unittests for test_game.HoneycombTest" />
-        <item itemvalue="Python tests.Unittests for test_game.HoneycombTest.test_place_2_ship" />
-        <item itemvalue="Python tests.Unittests for test_game.HoneycombTest.test_fire_not_destroyed" />
         <item itemvalue="Python tests.Unittests for test_game.HoneycombTest.test_fire_destroyed" />
+        <item itemvalue="Python tests.Unittests for test_game.HoneycombTest.test_fire_not_destroyed" />
+        <item itemvalue="Python tests.Unittests for test_game.HoneycombTest.test_bound" />
+        <item itemvalue="Python tests.Unittests for test_game.HoneycombTest.test_place_1_ship" />
+        <item itemvalue="Python tests.Unittests for test_game.EnvironmentTest" />
       </list>
     </recent_temporary>
   </component>
@@ -308,44 +324,44 @@
       <workItem from="1553510659619" duration="5612000" />
       <workItem from="1554629297934" duration="10086000" />
       <workItem from="1554885338525" duration="25505000" />
-      <workItem from="1557721096020" duration="17766000" />
+      <workItem from="1557721096020" duration="19115000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unittests_for_game_tests_HoneycombTest_test_place_1_ship - 2019.04.13 at 11h 00m 36s.xml">
-      <configuration name="Unittests for game_tests.HoneycombTest.test_place_1_ship" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittests_for_test_game_EnvironmentTest - 2019.04.13 at 13h 57m 02s.xml">
-      <configuration name="Unittests for test_game.EnvironmentTest" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittests_for_test_game_HoneycombTest - 2019.04.13 at 13h 57m 14s.xml">
-      <configuration name="Unittests for test_game.HoneycombTest" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittests_for_test_game_HoneycombTest - 2019.04.13 at 13h 57m 40s.xml">
-      <configuration name="Unittests for test_game.HoneycombTest" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittests_for_test_game_HoneycombTest_test_fire_destroyed - 2019.04.13 at 17h 18m 12s.xml">
-      <configuration name="Unittests for test_game.HoneycombTest.test_fire_destroyed" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittests_for_test_game_HoneycombTest_test_fire_destroyed - 2019.04.13 at 17h 50m 28s.xml">
-      <configuration name="Unittests for test_game.HoneycombTest.test_fire_destroyed" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittests_for_test_game_HoneycombTest_test_fire_not_destroyed - 2019.04.13 at 17h 50m 44s.xml">
-      <configuration name="Unittests for test_game.HoneycombTest.test_fire_not_destroyed" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittests_for_test_game_HoneycombTest - 2019.04.13 at 17h 51m 32s.xml">
-      <configuration name="Unittests for test_game.HoneycombTest" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittests_for_test_game_HoneycombTest_test_place_2_ship - 2019.04.13 at 17h 51m 35s.xml">
-      <configuration name="Unittests for test_game.HoneycombTest.test_place_2_ship" configurationId="tests" />
-    </history-entry>
     <history-entry file="Unittests_for_test_game_HoneycombTest - 2019.04.13 at 17h 51m 39s.xml">
       <configuration name="Unittests for test_game.HoneycombTest" configurationId="tests" />
     </history-entry>
+    <history-entry file="Unittests_for_test_game_CellTest - 2019.05.14 at 13h 51m 22s.xml">
+      <configuration name="Unittests for test_game.CellTest" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_for_test_game_EnvironmentTest - 2019.05.14 at 13h 51m 28s.xml">
+      <configuration name="Unittests for test_game.EnvironmentTest" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_for_test_game_EnvironmentTest_test_player_defeated - 2019.05.14 at 13h 54m 24s.xml">
+      <configuration name="Unittests for test_game.EnvironmentTest.test_player_defeated" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_for_test_game_EnvironmentTest - 2019.05.14 at 13h 55m 15s.xml">
+      <configuration name="Unittests for test_game.EnvironmentTest" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_for_test_game_HoneycombTest_test_place_1_ship - 2019.05.14 at 13h 56m 34s.xml">
+      <configuration name="Unittests for test_game.HoneycombTest.test_place_1_ship" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_for_test_game_HoneycombTest_test_bound - 2019.05.14 at 13h 56m 49s.xml">
+      <configuration name="Unittests for test_game.HoneycombTest.test_bound" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_for_test_game_HoneycombTest_test_bound - 2019.05.14 at 13h 57m 19s.xml">
+      <configuration name="Unittests for test_game.HoneycombTest.test_bound" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_for_test_game_HoneycombTest_test_fire_not_destroyed - 2019.05.14 at 13h 58m 27s.xml">
+      <configuration name="Unittests for test_game.HoneycombTest.test_fire_not_destroyed" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_for_test_game_HoneycombTest_test_fire_destroyed - 2019.05.14 at 13h 58m 29s.xml">
+      <configuration name="Unittests for test_game.HoneycombTest.test_fire_destroyed" configurationId="tests" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="102179000" />
+    <option name="totallyTimeSpent" value="103528000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -358,14 +374,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1366" height="768" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.12990937" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32991204" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49848944" weight="0.41935483" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49848944" weight="0.30645162" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4648094" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -374,7 +389,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32991204" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50151056" side_tool="true" weight="0.38709676" />
-      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.49924472" weight="0.2888563" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" sideWeight="0.49924472" visible="true" weight="0.58504397" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="13" weight="0.32991204" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -478,36 +493,6 @@
     <entry file="file://$PROJECT_DIR$/game/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_game.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2">
-          <caret line="47" column="30" selection-start-line="47" selection-start-column="30" selection-end-line="47" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/environment.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
-          <caret line="266" column="65" selection-start-line="266" selection-start-column="65" selection-end-line="266" selection-end-column="65" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="443">
-            <caret line="34" column="5" lean-forward="true" selection-start-line="34" selection-start-column="5" selection-end-line="34" selection-end-column="5" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cbattlebee.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1014">
@@ -520,6 +505,36 @@
             <element signature="e#3480#3776#0" />
             <element signature="e#3998#4167#0" />
             <element signature="e#3864#4251#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="523">
+            <caret line="53" column="8" selection-start-line="53" selection-start-column="8" selection-end-line="53" selection-end-column="8" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/environment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1663">
+          <caret line="266" column="65" selection-start-line="266" selection-start-column="65" selection-end-line="266" selection-end-column="65" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_game.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="82">
+          <caret line="76" column="52" selection-start-line="76" selection-start-column="52" selection-end-line="76" selection-end-column="52" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
