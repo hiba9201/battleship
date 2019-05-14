@@ -89,8 +89,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="161">
-                <caret line="29" column="89" selection-start-line="29" selection-start-column="89" selection-end-line="29" selection-end-column="89" />
+              <first_editor relative-caret-position="128">
+                <caret line="8" column="84" lean-forward="true" selection-start-line="8" selection-start-column="84" selection-end-line="8" selection-end-column="84" />
               </first_editor>
               <second_editor />
             </state>
@@ -303,7 +303,7 @@
       <workItem from="1553510659619" duration="5612000" />
       <workItem from="1554629297934" duration="10086000" />
       <workItem from="1554885338525" duration="25505000" />
-      <workItem from="1557721096020" duration="19345000" />
+      <workItem from="1557721096020" duration="19684000" />
     </task>
     <servers />
   </component>
@@ -340,7 +340,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="103758000" />
+    <option name="totallyTimeSpent" value="104097000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -512,8 +512,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="161">
-            <caret line="29" column="89" selection-start-line="29" selection-start-column="89" selection-end-line="29" selection-end-column="89" />
+          <first_editor relative-caret-position="128">
+            <caret line="8" column="84" lean-forward="true" selection-start-line="8" selection-start-column="84" selection-end-line="8" selection-end-column="84" />
           </first_editor>
           <second_editor />
         </state>
