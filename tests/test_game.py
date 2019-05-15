@@ -5,8 +5,8 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              os.path.pardir))
 
-from game.environment import Honeycomb, Environment, Cell, CellState, Player, \
-    FireResult
+from game.environment import (Honeycomb, Environment, Cell, CellState, Player,
+                              FireResult)
 
 
 class CellTest(unittest.TestCase):
@@ -14,7 +14,7 @@ class CellTest(unittest.TestCase):
         first = Cell(1, 1)
         second = Cell(1, 2)
         third = Cell(1, 1)
-        self.assertTrue(first != second)
+        self.assertNotEqual(first, second)
         self.assertFalse(first != third)
 
 
@@ -55,10 +55,12 @@ class HoneycombTest(unittest.TestCase):
         env = Environment(5, 2)
         env.user_field.field[1][1].state = CellState.SHIP
         self.assertNotEqual(
-            env.user_field.place_ship_on_field([(0, 0), (0, 1)], env, Player.USER),
+            env.user_field.place_ship_on_field([(0, 0), (0, 1)], env,
+                                               Player.USER),
             "Ship was placed successfully!")
         self.assertEqual(
-            env.user_field.place_ship_on_field([(1, 3), (2, 3)], env, Player.USER),
+            env.user_field.place_ship_on_field([(1, 3), (2, 3)], env,
+                                               Player.USER),
             "Ship was placed successfully!")
 
     def test_bound(self):

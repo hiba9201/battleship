@@ -20,9 +20,9 @@ class FireResult(enum.Enum):
     def __str__(self):
         res = self.name.lower()
         if self.name == 'UNABLE':
-            res += ' to shoot there'
+            res += ' to shoot there\r'
         elif self.name != 'MISSED':
-            res += ' ship'
+            res += ' ship\r'
         return res
 
 
@@ -31,7 +31,7 @@ class Player(enum.Enum):
     BOT = 1
 
     def __str__(self):
-        return self.name.lower()
+        return self.name.lower() + '\r'
 
 
 class Cell:
@@ -143,7 +143,7 @@ class Honeycomb:
                 else:
                     res += 'X'
                 res += '   '
-            res += '\n'
+            res += '\n\r'
             if y < self.side - 1:
                 side_count += 1
                 spaces_count -= 2
@@ -153,7 +153,6 @@ class Honeycomb:
         return res
 
     def is_in_bound(self, x, y):
-        global index
         if not 0 <= y < (self.side * 2 - 1):
             return False
 
@@ -204,14 +203,15 @@ class Honeycomb:
         self.field[y][x].state = CellState.DEAD
         return True
 
+    # TODO сделать коды возврата, а не строки
     def place_ship_on_field(self, cells_to_take, env, player=Player.BOT):
         taken_cells = []
         ship_len = len(cells_to_take)
         if not env.is_ship_in_stack(ship_len, player):
-            return f"{player} doesn't have a ship with length {ship_len}"
+            return f"{player} doesn't have a ship with length {ship_len}\r"
         for (x, y) in cells_to_take:
             if not self.is_in_bound(x, y):
-                return f"{player} can't place ship there!"
+                return f"{player} can't place ship there!\r"
 
             ceil_y = min(y + 2, self.side * 2 - 1)
             floor_y = max(y - 1, 0)
@@ -226,14 +226,14 @@ class Honeycomb:
                         continue
                     if ((self.field[j][i].state != CellState.EMPTY) and
                             self.field[j][i] not in taken_cells):
-                        return f"{player} can't place ship there!"
+                        return f"{player} can't place ship there!\r"
             taken_cells.append(self.field[y][x])
         for cell in taken_cells:
             cell.state = CellState.SHIP
         env.move_ship_to_fleet(ship_len, player)
         for pos in cells_to_take:
             self.poses.remove(pos)
-        return "Ship was placed successfully!"
+        return "Ship was placed successfully!\r"
 
     def auto_generate(self, hand, env, player):
         random.seed()
@@ -281,6 +281,7 @@ class BotAI:
     Заполнять поле начиная с какого-то угла, затем идти по стороне
     (Максимально компактно размещать корабли)
     '''
+
     @staticmethod
     def hard_generate_bot_field(e):
         pass
