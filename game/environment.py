@@ -3,12 +3,12 @@ import random
 
 
 class CellState(enum.Enum):
-    NOT_FIELD = 0
-    EMPTY = 1
-    FIRED = 2
-    DEAD = 3
-    SHIP = 4
-    MISSED = 5
+    NOT_FIELD = ' '
+    EMPTY = 'X'
+    FIRED = 'F'
+    DEAD = 'D'
+    SHIP = 'S'
+    MISSED = 'M'
 
 
 class FireResult(enum.Enum):
@@ -21,7 +21,9 @@ class FireResult(enum.Enum):
         res = self.name.lower()
         if self.name == 'UNABLE':
             res += ' to shoot there\r'
-        elif self.name != 'MISSED':
+        elif self.name == 'MISSED':
+            res += '\r'
+        else:
             res += ' ship\r'
         return res
 
@@ -31,7 +33,7 @@ class Player(enum.Enum):
     BOT = 1
 
     def __str__(self):
-        return self.name.lower() + '\r'
+        return self.name.lower()
 
 
 class Cell:
@@ -125,31 +127,33 @@ class Honeycomb:
         side_count = 0
         count = 0
         spaces_count = self.side * 2 - side_count
-        res = ''
+        res = ' ' * (spaces_count + 1) + '     '
+
+        for x in range(self.side):
+            res += '\033[94m' + str(x + 1) + '\033[0m'
+            res += '   '
+        res += '\n\r'
+
         for y in range(self.side * 2 - 1):
             res += ' ' * spaces_count
+            res += '\033[95m' + chr(ord('A') + y) + '\033[0m' + '   '
             for x in range(count, len(self.field[y])):
                 if (self.field[y][x].state, self.owner) == (
-                        CellState.SHIP, Player.USER):
-                    res += 'S'
-                elif self.field[y][x].state == CellState.FIRED:
-                    res += 'F'
-                elif self.field[y][x].state == CellState.DEAD:
-                    res += 'D'
-                elif self.field[y][x].state == CellState.MISSED:
-                    res += 'M'
-                elif self.field[y][x].state == CellState.NOT_FIELD:
-                    res += ' '
+                        CellState.SHIP, Player.BOT):
+                    res += CellState.EMPTY.value
                 else:
-                    res += 'X'
+                    res += self.field[y][x].state.value
                 res += '   '
-            res += '\n\r'
             if y < self.side - 1:
+                res += '\033[94m' + str(
+                    len(self.field[y]) - count + 1) + '\033[0m'
                 side_count += 1
                 spaces_count -= 2
             else:
                 count += 1
                 spaces_count += 2
+            res += '\n\r'
+
         return res
 
     def is_in_bound(self, x, y):

@@ -1,7 +1,5 @@
+#!/usr/bin/env python3
 import re
-import curses
-from curses.textpad import Textbox
-from threading import Thread
 
 import game.environment as env
 
@@ -67,7 +65,7 @@ class Game:
 class CommandExecutor:
     def __init__(self):
         self.commands = {}
-        self.add_command('quit', lambda g, p: quit())
+        self.add_command('exit', lambda g, p: quit())
         self.add_command('show', lambda g, p: self.show(g, p))
         self.add_command('place', lambda g, d: self.place(g, d))
         self.add_command('fire', lambda g, p: self.fire(g, p))
@@ -82,8 +80,8 @@ class CommandExecutor:
         else:
             return self.commands[cmd]
 
-    def add_command(self, cmnd, action):
-        self.commands[cmnd] = action
+    def add_command(self, cmnd, act):
+        self.commands[cmnd] = act
 
     @staticmethod
     def auto(cur_game, cmd_data):
@@ -149,59 +147,16 @@ class CommandExecutor:
             print(' "d L" cell vertically left/right or horizontally\r')
             print('fire [d L] - shoot in "d L" cell\r')
             print("auto - automatically generate user's field\r")
-            print('quit - close the app\r')
+            print('exit - close the app\r')
         return g
 
 
-def main():
-    stdscr = curses.initscr()
-    curses.noecho()
-    stdscr.keypad(False)
-    game = Game()
-    cmd_e = CommandExecutor()
-    command = ''
-    stdscr.addstr(0, 0, 'New game started. Enter command:')
-    textwin = curses.newwin(0, 10000)
-    textbox = Textbox(textwin)
-
-    while True:
-        if game.user_won or game.bot_won:
-            if game.user_won or game.bot_won:
-                while command != 'y' and command != 'n':
-                    command = input(
-                        'do you want to start a new game?[y / n]: ')
-                    if command == 'y':
-                        stdscr.refresh()
-                        stdscr.addstr(0, 0, 'New game started. Enter command:')
-                        game = Game()
-                if command == 'n':
-                    break
-
-        stdscr.getstr()
-        command = textbox.edit()
-        stdscr.addstr(command)
-        data = command.split(' ')
-        action = cmd_e.execute_command(data[0])
-        if action is not None:
-            game = action(game, data)
-        stdscr.refresh()
-
-
 if __name__ == '__main__':
-    stdscr = curses.initscr()
-    curses.echo()
-    curses.noqiflush()
-    stdscr.keypad(True)
-    th1 = Thread()
-    th2 = Thread()
-
-    th1.start()
-    th2.start()
 
     game = Game()
     cmd_e = CommandExecutor()
     command = ''
-    stdscr.addstr('New game started. Enter command:\n\r')
+    print('New game started. Enter command:\n\r')
 
     while True:
         if game.user_won or game.bot_won:
@@ -210,17 +165,14 @@ if __name__ == '__main__':
                     command = input(
                         'do you want to start a new game?[y / n]: ')
                     if command == 'y':
-                        stdscr.addstr('New game started. Enter command:\n\r')
+                        print('New game started. Enter command:\n\r')
                         game = Game()
                 if command == 'n':
                     break
-        command = stdscr.getstr()
-        # stdscr.clear()
-
-        command = command.decode('utf-8').strip()
-        data = command.split(' ')
+        command = input().strip()
+        data = command.split()
+        if command == '':
+            continue
         action = cmd_e.execute_command(data[0])
         if action is not None:
             game = action(game, data)
-
-        stdscr.refresh()
