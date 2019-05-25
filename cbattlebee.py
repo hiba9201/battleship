@@ -1,21 +1,29 @@
 #!/usr/bin/env python3
+import functools
 import re
+import readline
 
 import game.environment as env
 
 
+class ExitGame(Exception):
+    pass
+
+
 class Game:
-    def __init__(self, side=6):
-        self.env = env.Environment(side)
+    def __init__(self, side=6, diff=0, ship_max=4, mode='bot'):
+        self.env = env.Environment(side, diff, ship_max)
+        self.mode = mode
         self.user_won = False
         self.bot_won = False
+        print('New game started. Enter command:\r')
 
     @staticmethod
     def letters_to_number(letters):
         res = 0
         for i in range(len(letters)):
-            res += (ord(letters[i]) - ord('A')) * (26 ** i)
-        return res
+            res += (ord(letters[-i]) - ord('A') + 1) * (26 ** i)
+        return res - 1
 
     def place_ship(self, ship_len, rotation, x, letters):
         y = self.letters_to_number(letters)
@@ -40,20 +48,19 @@ class Game:
         if not self.env.is_user_fleet_placed():
             print('you should place all your fleet before fire!\r')
             return True
-        else:
-            result = self.env.bot_field.fire_cell(x, y, self.env,
-                                                  env.Player.USER)
-            print(env.Player.USER, result)
-            if result == env.FireResult.DESTROYED or \
-                    result == env.FireResult.HIT:
-                if self.env.is_player_defeated(env.Player.BOT):
-                    self.user_won = True
-                    print('user won!\r')
-                return True
-            elif result == env.FireResult.UNABLE:
-                return True
-            else:
-                return False
+
+        result = self.env.bot_field.fire_cell(x, y, self.env,
+                                              env.Player.USER)
+        print(env.Player.USER, result)
+        if result == env.FireResult.DESTROYED or \
+                result == env.FireResult.HIT:
+            if self.env.is_player_defeated(env.Player.BOT):
+                self.user_won = True
+                print('user won!\r')
+            return True
+        if result == env.FireResult.UNABLE:
+            return True
+        return False
 
     def bot_fire(self):
         self.env.bot.fire(self.env)
@@ -62,16 +69,10 @@ class Game:
             print('bot won!\r')
 
 
+# TODO separate commands execution and creation in different classes
 class CommandExecutor:
     def __init__(self):
         self.commands = {}
-        self.add_command('exit', lambda g, p: quit())
-        self.add_command('show', lambda g, p: self.show(g, p))
-        self.add_command('place', lambda g, d: self.place(g, d))
-        self.add_command('fire', lambda g, p: self.fire(g, p))
-        self.add_command('new', lambda g, d: self.start_new(g, d))
-        self.add_command('help', lambda g, d: self.help(g, d))
-        self.add_command('auto', lambda g, d: self.auto(g, d))
 
     def execute_command(self, cmd):
         if cmd not in self.commands.keys():
@@ -80,11 +81,25 @@ class CommandExecutor:
         else:
             return self.commands[cmd]
 
-    def add_command(self, cmnd, act):
-        self.commands[cmnd] = act
+    def command_decorator(self, function):
+        @functools.wraps(function)
+        def command_func(*args):
+            return function(*args)
 
-    @staticmethod
+        self.commands[function.__doc__.split()[0]] = command_func
+
+
+class BaseCommands:
+    executor = CommandExecutor()
+
+    @executor.command_decorator
+    def exit(g, d):
+        """exit - close the app"""
+        raise ExitGame
+
+    @executor.command_decorator
     def auto(cur_game, cmd_data):
+        """auto - automatically generate user's field"""
         if len(cmd_data) != 1:
             print('Wrong command arguments amount\r')
         else:
@@ -92,8 +107,10 @@ class CommandExecutor:
             print('Field was generated\r')
         return cur_game
 
-    @staticmethod
+    # TODO print stat
+    @executor.command_decorator
     def show(cur_game, cmd_data):
+        """show [user | bot] - show chosen field"""
         if len(cmd_data) != 2:
             print('Wrong command arguments amount\r')
         elif cmd_data[1] == 'user':
@@ -104,75 +121,84 @@ class CommandExecutor:
             print('Wrong player\r')
         return cur_game
 
-    @staticmethod
+    @executor.command_decorator
     def place(cur_game, cmd_data):
+        """place [ship_len] [vl | vr | h] [d L] - place ship on
+        \r  "d L" cell vertically left/right or horizontally"""
         if len(cmd_data) != 5:
             print('Wrong command arguments amount\r')
-        elif not re.match(r'place \d \w{1,2} \d{1,2} [A-Z]',
+        elif not re.match(r'place \d \w{1,2} \d{1,2} [A-Za-z]',
                           ' '.join(cmd_data)):
             print('Wrong placement data\r')
         else:
             cur_game.place_ship(int(cmd_data[1]), cmd_data[2],
-                                int(cmd_data[3]) - 1, cmd_data[4])
+                                int(cmd_data[3]) - 1, cmd_data[4].upper())
         return cur_game
 
-    @staticmethod
+    @executor.command_decorator
     def fire(cur_game, pos):
+        """fire [d L] - shoot in "d L" cell"""
         if len(pos) != 3:
             print('Wrong command arguments amount\r')
-        elif not re.match(r'fire \d{1,2} [A-Z]', ' '.join(pos)):
+        elif not re.match(r'fire \d{1,2} [A-Za-z]', ' '.join(pos)):
             print('Wrong fire data\r')
-        elif not cur_game.fire_with_fire_turn(int(pos[1]) - 1, pos[2]):
+        elif not cur_game.fire_with_fire_turn(int(pos[1]) - 1, pos[2].upper()):
             game.bot_fire()
         return cur_game
 
-    @staticmethod
+    @executor.command_decorator
     def start_new(g, d):
-        if len(d) > 1:
+        """new <side> <difficulty> <ship_max> <mode> - start new game"""
+        if len(d) > 5:
             print('More command arguments than expected\r')
             return g
-        print('New game started. Enter command:\r')
-        return Game()
+        side = int(d[1]) if len(d) > 1 else 6
+        diff = int(d[2]) if len(d) > 2 else 0
+        ship_max = int(d[3]) if len(d) > 3 else 4
+        mode = d[4] if len(d) > 4 else 'bot'
+        try:
+            return Game(side, diff, ship_max, mode)
+        except ValueError:
+            print('Wrong difficulty!')
+            return g
 
-    @staticmethod
+    @executor.command_decorator
     def help(g, d):
+        """help - show commands list"""
         if len(d) > 1:
             print('More command arguments than expected\r')
         else:
-            print('help - show this list\r')
-            print('show [user | bot] - show chosen field\r')
-            print('new - start new game\r')
-            print('place [ship_len] [vl | vr | h] [d L] - place ship on',
-                  end='')
-            print(' "d L" cell vertically left/right or horizontally\r')
-            print('fire [d L] - shoot in "d L" cell\r')
-            print("auto - automatically generate user's field\r")
-            print('exit - close the app\r')
+            for cmnd in BaseCommands.executor.commands.items():
+                print(cmnd[1].__doc__)
         return g
 
 
 if __name__ == '__main__':
 
     game = Game()
-    cmd_e = CommandExecutor()
+    cmd_e = BaseCommands()
     command = ''
-    print('New game started. Enter command:\n\r')
 
     while True:
-        if game.user_won or game.bot_won:
+        if game.mode == 'bot':
             if game.user_won or game.bot_won:
-                while command != 'y' and command != 'n':
-                    command = input(
-                        'do you want to start a new game?[y / n]: ')
-                    if command == 'y':
-                        print('New game started. Enter command:\n\r')
-                        game = Game()
-                if command == 'n':
+                if game.user_won or game.bot_won:
+                    while command != 'y' and command != 'n':
+                        command = input(
+                            'do you want to start a new game?[y / n]: ')
+                        if command == 'y':
+                            game = Game()
+                    if command == 'n':
+                        raise ExitGame
+            command = input().strip()
+            data = command.split()
+            if command == '':
+                continue
+            action = cmd_e.executor.execute_command(data[0])
+            if action is not None:
+                try:
+                    game = action(game, data)
+                except ExitGame:
                     break
-        command = input().strip()
-        data = command.split()
-        if command == '':
-            continue
-        action = cmd_e.execute_command(data[0])
-        if action is not None:
-            game = action(game, data)
+        elif game.mode == 'hot_seat':
+            raise NotImplemented
