@@ -20,7 +20,7 @@ class CellState(enum.Enum):
     MISSED = 'M'
 
 
-class ColorCell(enum.Enum):
+class Color(enum.Enum):
     RED = '\033[31m'
     DEFAULT = '\033[0m'
     BLUE = '\033[94m'
@@ -28,6 +28,15 @@ class ColorCell(enum.Enum):
     PURPLE = '\033[95m'
     BLACK = '\033[30m'
     GREEN = '\033[32m'
+
+    def __str__(self):
+        return self.value
+
+
+class PlacementResult(enum.Enum):
+    SUCCESS = "Ship was placed successfully!"
+    UNABLE = "can't place ship there!"
+    LENGTH = "doesn't have a ship with length"
 
     def __str__(self):
         return self.value
@@ -42,11 +51,9 @@ class FireResult(enum.Enum):
     def __str__(self):
         res = self.name.lower()
         if self.name == 'UNABLE':
-            res += ' to shoot there\r'
-        elif self.name == 'MISSED':
-            res += '\r'
+            res += ' to shoot there'
         else:
-            res += ' ship\r'
+            res += ' ship'
         return res
 
 
@@ -63,7 +70,7 @@ class Cell:
         self.x = x
         self.y = y
         self.state = state
-        self.color = ColorCell.DEFAULT
+        self.color = Color.GREEN
 
     def __ne__(self, other):
         return (self.x, self.y) != (other.x, other.y)
@@ -80,18 +87,16 @@ class Environment:
         self.SIDE = side
         self.user_field = Honeycomb(side, Player.USER)
         self.bot_field = Honeycomb(side, Player.BOT)
-        self._user_hand = [self.SHIP_MAX - x for x in range(self.SHIP_MAX)
-                           for _ in range(x + 1)]
+        self.user_hand = [self.SHIP_MAX - x for x in range(self.SHIP_MAX)
+                          for _ in range(x + 1)]
         self.bot_hand = [self.SHIP_MAX - x for x in range(self.SHIP_MAX)
                          for _ in range(x + 1)]
-        self._user_fleet = 0
+        self.user_fleet = 0
         self._bot_fleet = 0
-        if sum(self._user_hand) / self.user_field.square > 0.3:
-            print('Unable to init game. Ship length was reduced')
-        while sum(self._user_hand) / self.user_field.square > 0.3:
+        while sum(self.user_hand) / self.user_field.square > 0.3:
             self.SHIP_MAX -= 1
-            self._user_hand = [self.SHIP_MAX - x for x in range(self.SHIP_MAX)
-                               for _ in range(x + 1)]
+            self.user_hand = [self.SHIP_MAX - x for x in range(self.SHIP_MAX)
+                              for _ in range(x + 1)]
             self.bot_hand = [self.SHIP_MAX - x for x in range(self.SHIP_MAX)
                              for _ in range(x + 1)]
         self.bot = BotAI(diff).bot(self.bot_field)
@@ -100,9 +105,9 @@ class Environment:
     def reset_player_data(self, player):
         if player == Player.USER:
             self.user_field = Honeycomb(self.SIDE, Player.USER)
-            self._user_hand = [self.SHIP_MAX - x for x in range(self.SHIP_MAX)
-                               for _ in range(x + 1)]
-            self._user_fleet = 0
+            self.user_hand = [self.SHIP_MAX - x for x in range(self.SHIP_MAX)
+                              for _ in range(x + 1)]
+            self.user_fleet = 0
         else:
             self.bot_field = Honeycomb(self.SIDE, Player.BOT)
             self.bot_hand = [self.SHIP_MAX - x for x in range(self.SHIP_MAX)
@@ -110,22 +115,22 @@ class Environment:
             self._bot_fleet = 0
 
     def generate_user_field(self):
-        while not self.user_field.auto_generate(self._user_hand, self,
+        while not self.user_field.auto_generate(self.user_hand, self,
                                                 Player.USER):
             self.reset_player_data(Player.USER)
 
     def is_player_defeated(self, player=Player.BOT):
         if player == Player.USER:
-            return self._user_fleet == 0 and not self._user_hand
+            return self.user_fleet == 0 and not self.user_hand
         return self._bot_fleet == 0 and not self.bot_hand
 
     def is_user_fleet_placed(self):
-        return len(self._user_hand) == 0
+        return len(self.user_hand) == 0
 
     def is_ship_in_stack(self, ship_len, player=Player.BOT):
         stack = self.bot_hand
         if player == Player.USER:
-            stack = self._user_hand
+            stack = self.user_hand
         for ship in stack:
             if ship == ship_len:
                 return True
@@ -134,11 +139,11 @@ class Environment:
     def move_ship_to_fleet(self, ship_len, player=Player.BOT):
         stack = self.bot_hand
         if player == Player.USER:
-            stack = self._user_hand
+            stack = self.user_hand
         for i in range(len(stack)):
             if stack[i] == ship_len:
                 if player == Player.USER:
-                    self._user_fleet += stack.pop(i)
+                    self.user_fleet += stack.pop(i)
                 else:
                     self._bot_fleet += stack.pop(i)
                 return True
@@ -146,7 +151,7 @@ class Environment:
 
     def delete_cell_from_fleet(self, player=Player.BOT):
         if player == Player.USER:
-            self._user_fleet -= 1
+            self.user_fleet -= 1
         else:
             self._bot_fleet -= 1
 
@@ -175,11 +180,15 @@ class Honeycomb:
             else:
                 count += 1
 
-    # TODO поправить буквы в координатной сетке(если их больше 1)
-    # TODO n_t_l()
     @staticmethod
-    def number_to_letters(num):
-        pass
+    def number_to_letters(number):
+        res = ''
+        while number >= 26:
+            res += chr(ord('A') + number % 26)
+            number = number // 26 - 1
+        else:
+            res += chr(ord('A') + number)
+        return res[::-1]
 
     def __str__(self):
         side_count = 0
@@ -188,32 +197,34 @@ class Honeycomb:
         res = ' ' * (spaces_count + 1) + '     '
 
         for x in range(self.side):
-            res += '\033[94m' + str(x + 1) + '\033[0m'
+            res += Color.BLUE.value + str(x + 1) + Color.DEFAULT.value
             res += '   '
-        res += '\n\r'
+        res += '\n'
 
         for y in range(self.side * 2 - 1):
-            res += ' ' * spaces_count
-            res += '\033[95m' + chr(ord('A') + y) + '\033[0m' + '   '
+            letters = self.number_to_letters(y)
+            res += ' ' * (spaces_count - len(letters) + 1)
+            res += (Color.PURPLE.value + letters +
+                    Color.DEFAULT.value + '   ')
             for x in range(count, len(self.field[y])):
                 if (self.field[y][x].state, self.owner) == (
                         CellState.SHIP, Player.BOT):
                     res += (self.field[y][x].color.value +
-                            CellState.EMPTY.value + ColorCell.DEFAULT.value)
+                            CellState.EMPTY.value + Color.DEFAULT.value)
                 else:
                     res += (self.field[y][x].color.value +
                             self.field[y][x].state.value +
-                            ColorCell.DEFAULT.value)
+                            Color.DEFAULT.value)
                 res += '   '
             if y < self.side - 1:
-                res += '\033[94m' + str(
-                    len(self.field[y]) - count + 1) + '\033[0m'
+                res += Color.BLUE.value + str(
+                    len(self.field[y]) - count + 1) + Color.DEFAULT.value
                 side_count += 1
                 spaces_count -= 2
             else:
                 count += 1
                 spaces_count += 2
-            res += '\n\r'
+            res += '\n'
 
         return res
 
@@ -236,9 +247,9 @@ class Honeycomb:
         if self.field[y][x].state == CellState.SHIP:
             self.field[y][x].state = CellState.FIRED
             if player == Player.BOT:
-                self.field[y][x].color = ColorCell.RED
+                self.field[y][x].color = Color.RED
             else:
-                self.field[y][x].color = ColorCell.GREEN
+                self.field[y][x].color = Color.GREEN
             env.delete_cell_from_fleet(enemy)
             if self.is_ship_dead(x, y, x, y):
                 if player == Player.USER:
@@ -246,16 +257,16 @@ class Honeycomb:
                 return FireResult.DESTROYED
             else:
                 if player == player.USER:
-                    self.change_color_hit(x, y)
+                    self.change_color_hit(x, y, Color.GREEN)
                 return FireResult.HIT
         elif self.field[y][x].state == CellState.EMPTY:
             self.field[y][x].state = CellState.MISSED
-            self.field[y][x].color = ColorCell.AQUA
+            self.field[y][x].color = Color.AQUA
             return FireResult.MISSED
         else:
             return FireResult.UNABLE
 
-    def change_color_hit(self, x, y):
+    def change_color_hit(self, x, y, color):
         ceil_y = y + 2
         floor_y = y - 1
         ceil_x = x + 2
@@ -266,8 +277,8 @@ class Honeycomb:
                         ceil_y - 1, floor_x) or not self.is_in_bound(j, i):
                     continue
                 if (self.field[i][j].state != CellState.MISSED and
-                        self.field[i][j].color != ColorCell.RED):
-                    self.field[i][j].color = ColorCell.GREEN
+                        self.field[i][j].color != Color.RED):
+                    self.field[i][j].color = color
 
     def change_color_death(self, x, y, prev_x, prev_y):
         ceil_y = y + 2
@@ -284,7 +295,7 @@ class Honeycomb:
                             self.field[i][j] != self.field[prev_y][prev_x]):
                         self.change_color_death(j, i, x, y)
                 elif self.field[y][x].state == CellState.DEAD:
-                    self.field[i][j].color = ColorCell.RED
+                    self.field[i][j].color = Color.RED
         return True
 
     def is_ship_dead(self, x, y, prev_x, prev_y):
@@ -307,17 +318,22 @@ class Honeycomb:
                 elif self.field[i][j].state == CellState.SHIP:
                     return False
         self.field[y][x].state = CellState.DEAD
-        self.field[y][x].color = ColorCell.RED
+        self.field[y][x].color = Color.RED
         return True
+
+    def clear_colors(self):
+        for row in self.field:
+            for cell in row:
+                cell.color = Color.DEFAULT
 
     def place_ship_on_field(self, cells_to_take, env, player=Player.BOT):
         taken_cells = []
         ship_len = len(cells_to_take)
         if not env.is_ship_in_stack(ship_len, player):
-            return f"{player} doesn't have a ship with length {ship_len}"
+            return PlacementResult.LENGTH
         for (x, y) in cells_to_take:
             if not self.is_in_bound(x, y):
-                return f"{player} can't place ship there!"
+                return PlacementResult.UNABLE
 
             ceil_y = min(y + 2, self.side * 2 - 1)
             floor_y = max(y - 1, 0)
@@ -332,14 +348,19 @@ class Honeycomb:
                         continue
                     if ((self.field[j][i].state != CellState.EMPTY) and
                             self.field[j][i] not in taken_cells):
-                        return f"{player} can't place ship there!"
+                        return PlacementResult.UNABLE
             taken_cells.append(self.field[y][x])
         for cell in taken_cells:
+            self.change_color_hit(cell.x, cell.y, Color.RED)
             cell.state = CellState.SHIP
         env.move_ship_to_fleet(ship_len, player)
         for pos in cells_to_take:
             self.poses.remove(pos)
-        return "Ship was placed successfully!"
+        if player == Player.USER and not env.user_hand:
+            self.clear_colors()
+        elif player == Player.BOT and not env.bot_hand:
+            self.clear_colors()
+        return PlacementResult.SUCCESS
 
     def auto_generate(self, hand, env, player):
         random.seed()
@@ -347,7 +368,7 @@ class Honeycomb:
         while hand:
             ship_len = hand[0]
             res = ''
-            while res != "Ship was placed successfully!":
+            while res != PlacementResult.SUCCESS:#"Ship was placed successfully!":
                 rotation = random.choice(('vl', 'vr', 'h'))
                 (x, y) = random.choice(self.poses)
                 if rotation == 'vl':
@@ -378,7 +399,7 @@ class Honeycomb:
                 else:
                     y_border = self.side * 2 - 1
             res = ''
-            while res != "Ship was placed successfully!":
+            while res != PlacementResult.SUCCESS:#"Ship was placed successfully!":
                 rotation = random.choice(('vl', 'vr', 'h'))
                 y = random.randrange(min(y_border, self.side * 2 - 1))
                 x = random.randrange(min(x_border, len(self.field[y])))

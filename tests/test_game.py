@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              os.path.pardir))
 
 from game.environment import (Honeycomb, Environment, Cell, CellState, Player,
-                              FireResult)
+                              FireResult, PlacementResult)
 
 
 class CellTest(unittest.TestCase):
@@ -41,15 +41,21 @@ class EnvironmentTest(unittest.TestCase):
 
 
 class HoneycombTest(unittest.TestCase):
+    def test_num_to_letter(self):
+        self.assertEqual('A', Honeycomb.number_to_letters(0))
+        self.assertEqual('C', Honeycomb.number_to_letters(2))
+        self.assertEqual('AB', Honeycomb.number_to_letters(27))
+        self.assertEqual('AOC', Honeycomb.number_to_letters(1068))
+
     def test_place_1_ship(self):
         env = Environment(5, ship_max=2)
         env.user_field.field[1][1].state = CellState.SHIP
         self.assertNotEqual(
             env.user_field.place_ship_on_field([(0, 0)], env, Player.USER),
-            "Ship was placed successfully!")
+            PlacementResult.SUCCESS)
         self.assertEqual(
             env.user_field.place_ship_on_field([(1, 3)], env, Player.USER),
-            "Ship was placed successfully!")
+            PlacementResult.SUCCESS)
 
     def test_place_2_ship(self):
         env = Environment(5, ship_max=2)
@@ -57,11 +63,11 @@ class HoneycombTest(unittest.TestCase):
         self.assertNotEqual(
             env.user_field.place_ship_on_field([(0, 0), (0, 1)], env,
                                                Player.USER),
-            "Ship was placed successfully!")
+            PlacementResult.SUCCESS)
         self.assertEqual(
             env.user_field.place_ship_on_field([(1, 3), (2, 3)], env,
                                                Player.USER),
-            "Ship was placed successfully!")
+            PlacementResult.SUCCESS)
 
     def test_bound(self):
         field = Honeycomb(3, Player.USER)
