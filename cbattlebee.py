@@ -2,8 +2,10 @@
 import functools
 import re
 import os
-import readline
 import sys
+
+if sys.platform != 'win32':
+    import readline
 
 import game.environment as genv
 
