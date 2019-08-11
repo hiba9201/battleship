@@ -286,7 +286,7 @@ if __name__ == '__main__':
                 while command != 'y' and command != 'n':
                     command = input(
                         'do you want to share game\'s result on Twitter?[y / n]: ')
-                if command == 'y':  # TODO вынести в меотд
+                if command == 'y':  # TODO вынести в отдельный метод
                     login = input('Twitter login: ')
                     password = getpass.getpass('Twitter password: ')
                     while not sharing.try_auth_in(login, password):
