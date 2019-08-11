@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6a7e5870-0781-4430-bd0e-efcacecddaef" name="Default Changelist" comment="!">
+    <list default="true" id="6a7e5870-0781-4430-bd0e-efcacecddaef" name="Default Changelist" comment="major changes(i just didn't update for a long time)">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cbattlebee.py" beforeDir="false" afterPath="$PROJECT_DIR$/cbattlebee.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/environment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_game.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_game.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -60,7 +63,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
+            <state relative-caret-position="720">
               <caret line="47" column="66" selection-start-line="47" selection-start-column="65" selection-end-line="47" selection-end-column="66" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
@@ -69,11 +72,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game/environment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4146">
-              <caret line="205" column="58" selection-start-line="205" selection-start-column="58" selection-end-line="205" selection-end-column="58" />
+            <state relative-caret-position="132">
+              <caret line="417" column="12" selection-start-line="417" selection-start-column="12" selection-end-line="417" selection-end-column="12" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -81,11 +84,14 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cbattlebee.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3442">
-              <caret line="3" column="9" lean-forward="true" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
+            <state relative-caret-position="132">
+              <caret line="143" column="23" selection-start-line="143" selection-start-column="23" selection-end-line="143" selection-end-column="23" />
+              <folding>
+                <element signature="e#23#39#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -104,6 +110,15 @@
       <find>don</find>
       <find>print</find>
       <find>\r</find>
+      <find>is_ship_in</find>
+      <find>move_shi</find>
+      <find>is_player</find>
+      <find>is_fleet</find>
+      <find>del</find>
+      <find>self.players.values</find>
+      <find>players.values</find>
+      <find>GameMode</find>
+      <find>add</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -130,8 +145,8 @@
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/../battleship_zip/tests/test_game.py" />
         <option value="$PROJECT_DIR$/tests/test_game.py" />
-        <option value="$PROJECT_DIR$/game/environment.py" />
         <option value="$PROJECT_DIR$/cbattlebee.py" />
+        <option value="$PROJECT_DIR$/game/environment.py" />
       </list>
     </option>
   </component>
@@ -147,7 +162,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -169,6 +183,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -310,6 +325,10 @@
       <workItem from="1554629297934" duration="10086000" />
       <workItem from="1554885338525" duration="25505000" />
       <workItem from="1557721096020" duration="78578000" />
+      <workItem from="1563873849799" duration="4540000" />
+      <workItem from="1564483912183" duration="765000" />
+      <workItem from="1565348667433" duration="13936000" />
+      <workItem from="1565512421536" duration="4390000" />
     </task>
     <servers />
   </component>
@@ -346,7 +365,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="162991000" />
+    <option name="totallyTimeSpent" value="186622000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -359,8 +378,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1366" height="768" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.12990937" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1344411" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -373,8 +393,8 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32991204" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50151056" side_tool="true" weight="0.38709676" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="11" sideWeight="0.49924472" visible="true" weight="0.74340177" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50151056" side_tool="true" weight="0.61143696" />
+      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.49848944" weight="0.61143696" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="13" weight="0.32991204" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -415,8 +435,19 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
-    <option name="LAST_COMMIT_MESSAGE" value="" />
+    <MESSAGE value="major changes(i just didn't update for a long time)" />
+    <option name="LAST_COMMIT_MESSAGE" value="major changes(i just didn't update for a long time)" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
@@ -476,19 +507,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="-21">
-            <caret line="24" column="51" selection-start-line="24" selection-start-column="51" selection-end-line="24" selection-end-column="51" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/game/__init__.py" />
     <entry file="file://$PROJECT_DIR$/../battleship_zip/game/environment.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3552">
@@ -523,9 +542,19 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="384">
+            <caret line="24" column="51" selection-start-line="24" selection-start-column="51" selection-end-line="24" selection-end-column="51" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_game.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
+        <state relative-caret-position="720">
           <caret line="47" column="66" selection-start-line="47" selection-start-column="65" selection-end-line="47" selection-end-column="66" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
@@ -533,19 +562,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cbattlebee.py">
+    <entry file="file://$PROJECT_DIR$/game/environment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3442">
-          <caret line="3" column="9" lean-forward="true" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
+        <state relative-caret-position="132">
+          <caret line="417" column="12" selection-start-line="417" selection-start-column="12" selection-end-line="417" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/environment.py">
+    <entry file="file://$PROJECT_DIR$/cbattlebee.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4146">
-          <caret line="205" column="58" selection-start-line="205" selection-start-column="58" selection-end-line="205" selection-end-column="58" />
+        <state relative-caret-position="132">
+          <caret line="143" column="23" selection-start-line="143" selection-start-column="23" selection-end-line="143" selection-end-column="23" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#23#39#0" expanded="true" />
           </folding>
         </state>
       </provider>

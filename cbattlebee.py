@@ -3,11 +3,17 @@ import functools
 import re
 import os
 import sys
+import enum
 
 if sys.platform != 'win32':
     import readline
 
 import game.environment as genv
+
+
+class GameMode(enum.Enum):
+    HOT_SEAT = 'hs'
+    BOT = 'bot'
 
 
 class ExitGame(Exception):
@@ -17,10 +23,28 @@ class ExitGame(Exception):
 class Game:
     def __init__(self, side=6, diff=0, ship_max=4, mode='bot'):
         self.env = genv.Environment(side, diff, ship_max)
-        self.mode = mode
-        self.user_won = False
-        self.bot_won = False
-        print('New game started. Enter command:')
+        self.mode = GameMode(mode)
+        self.finish = False
+
+        if self.mode == GameMode.BOT:
+            username = ''
+            while not username:
+                username = input('Player, enter name: ')
+            self.env.add_player(genv.PlayerType.USER, username)
+            self.env.players[username].active = True
+            self.env.add_player(genv.PlayerType.BOT, 'bot')
+            print('New game with bot started. Enter command:')
+        elif self.mode == GameMode.HOT_SEAT:
+            username = ''
+            while not username:
+                username = input('first player, enter name: ')
+            self.env.add_player(genv.PlayerType.USER, username)
+            self.env.players[username].active = True
+            username = ''
+            while not username:
+                username = input('second player, enter name: ')
+            self.env.add_player(genv.PlayerType.USER, username)
+            print('New hot seat game started. Enter command:')
 
     @staticmethod
     def letters_to_number(letters):
@@ -45,42 +69,58 @@ class Game:
         else:
             print('unknown rotation!')
             return
-        res = self.env.user_field.place_ship_on_field(cells_to_take, self.env,
-                                                      genv.Player.USER)
+        _, player = self.env.get_active_player()
+        res = player.field.place_ship_on_field(cells_to_take, player)
         if res == genv.PlacementResult.SUCCESS:
             print(res)
         elif res == genv.PlacementResult.UNABLE:
-            print(genv.Player.USER, res)
+            print(genv.PlayerType.USER, res)
         elif res == genv.PlacementResult.LENGTH:
-            print(genv.Player.USER, res, ship_len)
+            print(genv.PlayerType.USER, res, ship_len)
 
     def fire_with_fire_turn(self, x, letters):
         y = self.letters_to_number(letters)
-        if not self.env.is_user_fleet_placed():
+        name1, player1 = self.env.get_active_player()
+        _, player2 = self.env.get_nonactive_player()
+        if not player1.is_fleet_placed():
             print('you should place all your fleet before fire!')
             return True
 
-        result = self.env.bot_field.fire_cell(x, y, self.env,
-                                              genv.Player.USER)
-        print(genv.Player.USER, result)
+        result = player2.field.fire_cell(x, y, self.env, player1)
+        print(player1.type, result)
         if result == genv.FireResult.DESTROYED or \
                 result == genv.FireResult.HIT:
-            if self.env.is_player_defeated(genv.Player.BOT):
-                self.user_won = True
-                print('user won!')
+            if player2.is_player_defeated():
+                self.finish = True
+                print(name1 + ' won!')
             return True
         if result == genv.FireResult.UNABLE:
             return True
         return False
 
     def bot_fire(self):
-        self.env.bot.fire(self.env)
-        if self.env.is_player_defeated(genv.Player.USER):
-            self.bot_won = True
+        bot = self.env.players['bot']
+        _, user = self.env.get_nonactive_player()
+        bot.bot.fire(self.env)
+        self.switch_players()
+        if user.is_player_defeated():
+            self.finish = True
             print('bot won!')
 
+    def switch_players(self):
+        _, player1 = self.env.get_active_player()
+        name, player2 = self.env.get_nonactive_player()
+        player1.active = False
+        player2.active = True
+        if self.mode == GameMode.HOT_SEAT:
+            input('press any key to clear screen...')
+            if sys.platform == 'win32':
+                os.system('cls')
+            else:
+                os.system('clear')
+        print(name + "'s move")
 
-# TODO separate commands execution and creation in different classes
+
 class CommandExecutor:
     def __init__(self):
         self.commands = {}
@@ -95,12 +135,13 @@ class CommandExecutor:
     def command_decorator(self, function):
         @functools.wraps(function)
         def command_func(*args):
-            return function(*args)
+            return function(
+                *args)  # something about errors/exceptions/etc checks
 
         self.commands[function.__name__] = command_func
 
 
-class BaseCommands:
+class BaseCommands:  # TODO добавить вывод статистики
     executor = CommandExecutor()
 
     @executor.command_decorator
@@ -127,6 +168,9 @@ auto - automatically generate user's field"""
             print('Wrong command arguments amount')
         else:
             cur_game.env.generate_user_field()
+            if cur_game.mode == GameMode.HOT_SEAT:
+                print('player placed their fleet')
+                cur_game.switch_players()
             print('Field was generated\r')
         return cur_game
 
@@ -134,13 +178,11 @@ auto - automatically generate user's field"""
     @executor.command_decorator
     def show(cur_game, cmd_data):
         """
-show [user | bot] - show chosen field"""
+show [username | bot] - show chosen field"""
         if len(cmd_data) != 2:
             print('Wrong command arguments amount')
-        elif cmd_data[1] == 'user':
-            print(cur_game.env.user_field)
-        elif cmd_data[1] == 'bot':
-            print(cur_game.env.bot_field)
+        elif cmd_data[1] in cur_game.env.players.keys():
+            print(cur_game.env.players[cmd_data[1]].field)
         else:
             print('Wrong player')
         return cur_game
@@ -148,7 +190,7 @@ show [user | bot] - show chosen field"""
     @executor.command_decorator
     def place(cur_game, cmd_data):
         """
-place [ship_len] [vl | vr | h] [d L] - place ship on
+place [ship_len] [vl | vr | h] [d L] - place ship with *ship_len* length on
 "d L" cell vertically left/right or horizontally"""
         if len(cmd_data) != 5:
             print('Wrong command arguments amount')
@@ -169,7 +211,9 @@ fire [d L] - shoot in "d L" cell"""
         elif not re.match(r'fire \d{1,2} [A-Za-z]', ' '.join(pos)):
             print('Wrong fire data')
         elif not cur_game.fire_with_fire_turn(int(pos[1]) - 1, pos[2].upper()):
-            game.bot_fire()
+            cur_game.switch_players()
+            if cur_game.mode == GameMode.BOT:
+                game.bot_fire()
         return cur_game
 
     @executor.command_decorator
@@ -180,7 +224,7 @@ All arguments are optional:
 side - side length
 difficulty - difficulty 0 or 1
 ship_max - maximum ship length
-mode - game mode: hot_seat or bot. Not implemented yet!"""
+mode - game mode: hs or bot"""
         if len(d) > 5:
             print('More command arguments than expected')
             return g
@@ -200,7 +244,7 @@ mode - game mode: hot_seat or bot. Not implemented yet!"""
             print('Wrong ship length!')
             return g
         if len(d) > 4:
-            if d[4] != 'hot_seat' or d[4] != 'bot':
+            if d[4] != GameMode.HOT_SEAT.value and d[4] != GameMode.BOT.value:
                 print('Wrong mode!')
                 return g
         mode = d[4] if len(d) > 4 else 'bot'
@@ -219,6 +263,13 @@ help - show commands list"""
             print(BaseCommands.executor.commands[d[1]].__doc__)
         return g
 
+    @executor.command_decorator
+    def stat(g, d):
+        """
+stat - show current gam statistics
+        """
+        pass
+
 
 if __name__ == '__main__':
 
@@ -227,25 +278,20 @@ if __name__ == '__main__':
     command = ''
 
     while True:
-        if game.mode == 'bot':
-            if game.user_won or game.bot_won:
-                if game.user_won or game.bot_won:
-                    while command != 'y' and command != 'n':
-                        command = input(
-                            'do you want to start a new game?[y / n]: ')
-                        if command == 'y':
-                            game = Game()
-                    if command == 'n':
-                        raise ExitGame
-            command = input().strip()
-            data = command.split()
-            if command == '':
-                continue
-            action = cmd_e.executor.execute_command(data[0])
-            if action is not None:
-                try:
-                    game = action(game, data)
-                except ExitGame:
-                    break
-        elif game.mode == 'hot_seat':
-            raise NotImplemented
+        if game.finish:
+            while command != 'y' and command != 'n':
+                command = input('do you want to start a new game?[y / n]: ')
+                if command == 'y':
+                    game = Game()
+            if command == 'n':
+                cmd_e.executor.execute_command('exit')
+        command = input().strip()
+        data = command.split()
+        if command == '':
+            continue
+        action = cmd_e.executor.execute_command(data[0])
+        if action is not None:
+            try:
+                game = action(game, data)
+            except ExitGame:
+                break
