@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import functools
+import getpass
 import re
 import os
 import sys
@@ -9,6 +10,7 @@ if sys.platform != 'win32':
     import readline
 
 import game.environment as genv
+import network.twitter_access as tw_acces
 
 
 class GameMode(enum.Enum):
@@ -25,8 +27,9 @@ class Game:
         self.env = genv.Environment(side, diff, ship_max)
         self.mode = GameMode(mode)
         self.finish = False
+        # self.stat =
 
-        if self.mode == GameMode.BOT:
+        if self.mode == GameMode.BOT:  # TODO ограничить длину имени для твита
             username = ''
             while not username:
                 username = input('Player, enter name: ')
@@ -135,8 +138,7 @@ class CommandExecutor:
     def command_decorator(self, function):
         @functools.wraps(function)
         def command_func(*args):
-            return function(
-                *args)  # something about errors/exceptions/etc checks
+            return function(*args)  # something about errors checks
 
         self.commands[function.__name__] = command_func
 
@@ -276,9 +278,27 @@ if __name__ == '__main__':
     game = Game()
     cmd_e = BaseCommands()
     command = ''
+    sharing = tw_acces.Twitter()
 
     while True:
         if game.finish:
+            if game.mode == GameMode.HOT_SEAT:
+                while command != 'y' and command != 'n':
+                    command = input(
+                        'do you want to share game\'s result on Twitter?[y / n]: ')
+                if command == 'y':  # TODO вынести в меотд
+                    login = input('Twitter login: ')
+                    password = getpass.getpass('Twitter password: ')
+                    while not sharing.try_auth_in(login, password):
+                        login = input('Twitter login: ')
+                        password = getpass.getpass('Twitter password: ')
+                    name, _ = game.env.get_nonactive_player()
+                    tweet_text = (f'I won "{name}" in Battlebee game with ' +
+                                  f'hexagonal field with side length ' +
+                                  f'{game.env.side} and ' +
+                                  f'{game.env.ships_count} ships')
+                    sharing.send_tweet(tweet_text)
+            command = ''
             while command != 'y' and command != 'n':
                 command = input('do you want to start a new game?[y / n]: ')
                 if command == 'y':

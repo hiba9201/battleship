@@ -151,6 +151,13 @@ class Environment:
             if not p.active:
                 return n, p
 
+    @property
+    def ships_count(self):
+        res = 0
+        for i in range(self.ship_max):
+            res += i + 1
+        return res
+
 
 class Honeycomb:
     def __init__(self, side, player):

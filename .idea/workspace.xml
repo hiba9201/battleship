@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6a7e5870-0781-4430-bd0e-efcacecddaef" name="Default Changelist" comment="major changes(i just didn't update for a long time)">
+    <list default="true" id="6a7e5870-0781-4430-bd0e-efcacecddaef" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/network/twitter_access.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cbattlebee.py" beforeDir="false" afterPath="$PROJECT_DIR$/cbattlebee.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/environment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_game.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_game.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -63,7 +63,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="720">
+            <state relative-caret-position="752">
               <caret line="47" column="66" selection-start-line="47" selection-start-column="65" selection-end-line="47" selection-end-column="66" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
@@ -75,8 +75,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game/environment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="417" column="12" selection-start-line="417" selection-start-column="12" selection-end-line="417" selection-end-column="12" />
+            <state relative-caret-position="70">
+              <caret line="160" selection-start-line="160" selection-end-line="160" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -87,10 +87,22 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cbattlebee.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="143" column="23" selection-start-line="143" selection-start-column="23" selection-end-line="143" selection-end-column="23" />
+            <state relative-caret-position="316">
+              <caret line="295" column="50" selection-start-line="295" selection-start-column="50" selection-end-line="295" selection-end-column="50" />
               <folding>
                 <element signature="e#23#39#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/network/twitter_access.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-47">
+              <caret line="13" lean-forward="true" selection-start-line="13" selection-end-line="13" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -145,8 +157,9 @@
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/../battleship_zip/tests/test_game.py" />
         <option value="$PROJECT_DIR$/tests/test_game.py" />
-        <option value="$PROJECT_DIR$/cbattlebee.py" />
+        <option value="$PROJECT_DIR$/network/twitter_access.py" />
         <option value="$PROJECT_DIR$/game/environment.py" />
+        <option value="$PROJECT_DIR$/cbattlebee.py" />
       </list>
     </option>
   </component>
@@ -328,8 +341,17 @@
       <workItem from="1563873849799" duration="4540000" />
       <workItem from="1564483912183" duration="765000" />
       <workItem from="1565348667433" duration="13936000" />
-      <workItem from="1565512421536" duration="4390000" />
+      <workItem from="1565512421536" duration="4660000" />
+      <workItem from="1565529239746" duration="5083000" />
     </task>
+    <task id="LOCAL-00001" summary="major changes(i just didn't update for a long time)">
+      <created>1565518136354</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1565518136355</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -365,7 +387,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="186622000" />
+    <option name="totallyTimeSpent" value="191975000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -380,7 +402,7 @@
     <frame x="0" y="0" width="1366" height="768" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1344411" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13595167" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -394,7 +416,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32991204" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50151056" side_tool="true" weight="0.61143696" />
-      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.49848944" weight="0.61143696" />
+      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.49848944" weight="0.6026393" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="13" weight="0.32991204" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -446,6 +468,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="major changes(i just didn't update for a long time)" />
     <option name="LAST_COMMIT_MESSAGE" value="major changes(i just didn't update for a long time)" />
   </component>
@@ -554,7 +577,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_game.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
+        <state relative-caret-position="752">
           <caret line="47" column="66" selection-start-line="47" selection-start-column="65" selection-end-line="47" selection-end-column="66" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
@@ -564,18 +587,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/game/environment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="417" column="12" selection-start-line="417" selection-start-column="12" selection-end-line="417" selection-end-column="12" />
+        <state relative-caret-position="70">
+          <caret line="160" selection-start-line="160" selection-end-line="160" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/network/twitter_access.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-47">
+          <caret line="13" lean-forward="true" selection-start-line="13" selection-end-line="13" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/cbattlebee.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="143" column="23" selection-start-line="143" selection-start-column="23" selection-end-line="143" selection-end-column="23" />
+        <state relative-caret-position="316">
+          <caret line="295" column="50" selection-start-line="295" selection-start-column="50" selection-end-line="295" selection-end-column="50" />
           <folding>
             <element signature="e#23#39#0" expanded="true" />
           </folding>
