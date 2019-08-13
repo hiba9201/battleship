@@ -82,6 +82,8 @@ class Player:
         self.type = typ
         self.active = False
         self.field = Honeycomb(env.side, self)
+        self.shots_count = 0
+        self.missed_count = 0
         self.hand = [env.ship_max - x for x in
                      range(env.ship_max) for _ in range(x + 1)]
         self.fleet = 0
@@ -247,6 +249,7 @@ class Honeycomb:
         _, enemy = env.get_nonactive_player()
         if self.field[y][x].state == CellState.SHIP:
             self.field[y][x].state = CellState.FIRED
+            player.shots_count += 1
             if player.active:
                 self.field[y][x].color = Color.RED
             else:
@@ -263,6 +266,8 @@ class Honeycomb:
         elif self.field[y][x].state == CellState.EMPTY:
             self.field[y][x].state = CellState.MISSED
             self.field[y][x].color = Color.AQUA
+            player.shots_count += 1
+            player.missed_count += 1
             return FireResult.MISSED
         else:
             return FireResult.UNABLE

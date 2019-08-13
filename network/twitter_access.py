@@ -20,6 +20,7 @@ class Twitter:
         self.auth_token = re_auth_token.search(get_resp.text).group(1)
         self.api = None
 
+    # TODO add access_token save and fetch it from file if user isn't new
     def try_auth_in(self, login, password):
         post_resp = self.session.post(self.auth_url, data={
             'authenticity_token': self.auth_token,

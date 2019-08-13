@@ -27,7 +27,6 @@ class Game:
         self.env = genv.Environment(side, diff, ship_max)
         self.mode = GameMode(mode)
         self.finish = False
-        # self.stat =
 
         if self.mode == GameMode.BOT:  # TODO ограничить длину имени для твита
             username = ''
@@ -73,6 +72,9 @@ class Game:
             print('unknown rotation!')
             return
         _, player = self.env.get_active_player()
+        if player.is_fleet_placed():
+            print('Fleet is already placed!')
+            return
         res = player.field.place_ship_on_field(cells_to_take, player)
         if res == genv.PlacementResult.SUCCESS:
             print(res)
@@ -80,6 +82,8 @@ class Game:
             print(genv.PlayerType.USER, res)
         elif res == genv.PlacementResult.LENGTH:
             print(genv.PlayerType.USER, res, ship_len)
+        if player.is_fleet_placed() and self.mode == GameMode.HOT_SEAT:
+            self.switch_players()
 
     def fire_with_fire_turn(self, x, letters):
         y = self.letters_to_number(letters)
@@ -91,11 +95,11 @@ class Game:
 
         result = player2.field.fire_cell(x, y, self.env, player1)
         print(player1.type, result)
-        if result == genv.FireResult.DESTROYED or \
-                result == genv.FireResult.HIT:
+        if (result == genv.FireResult.DESTROYED or
+                result == genv.FireResult.HIT):
             if player2.is_player_defeated():
                 self.finish = True
-                print(name1 + ' won!')
+                print(f'{name1} won!')
             return True
         if result == genv.FireResult.UNABLE:
             return True
@@ -123,6 +127,15 @@ class Game:
                 os.system('clear')
         print(name + "'s move")
 
+    def generate_tweet(self, username):
+        _, player = self.env.get_active_player()
+        return (f'I won "{username}" in Battlebee game with ' +
+                f'hexagonal field with side length ' +
+                f'{self.env.side} and ' +
+                f'{self.env.ships_count} ships\n' +
+                f'shots: {player.shots_count}\n' +
+                f'missed: {player.missed_count}')
+
 
 class CommandExecutor:
     def __init__(self):
@@ -143,7 +156,7 @@ class CommandExecutor:
         self.commands[function.__name__] = command_func
 
 
-class BaseCommands:  # TODO добавить вывод статистики
+class BaseCommands:
     executor = CommandExecutor()
 
     @executor.command_decorator
@@ -268,9 +281,24 @@ help - show commands list"""
     @executor.command_decorator
     def stat(g, d):
         """
-stat - show current gam statistics
+stat - show current game statistics
         """
-        pass
+        if len(d) > 2:
+            print('More command arguments than expected')
+        elif len(d) == 2:
+            try:
+                player = g.env.players[d[1]]
+                print(f'{d[1]}:')
+                print(f'shots: {player.shots_count}')
+                print(f'missed: {player.missed_count}')
+            except KeyError:
+                print('Non-existent username!')
+        else:
+            for username, player in g.env.players.items():
+                print(f'{username}:')
+                print(f'shots: {player.shots_count}')
+                print(f'missed: {player.missed_count}\n')
+        return g
 
 
 if __name__ == '__main__':
@@ -284,8 +312,8 @@ if __name__ == '__main__':
         if game.finish:
             if game.mode == GameMode.HOT_SEAT:
                 while command != 'y' and command != 'n':
-                    command = input(
-                        'do you want to share game\'s result on Twitter?[y / n]: ')
+                    command = input('do you want to share game\'s result ' +
+                                    'on Twitter?[y / n]: ')
                 if command == 'y':  # TODO вынести в отдельный метод
                     login = input('Twitter login: ')
                     password = getpass.getpass('Twitter password: ')
@@ -293,18 +321,15 @@ if __name__ == '__main__':
                         login = input('Twitter login: ')
                         password = getpass.getpass('Twitter password: ')
                     name, _ = game.env.get_nonactive_player()
-                    tweet_text = (f'I won "{name}" in Battlebee game with ' +
-                                  f'hexagonal field with side length ' +
-                                  f'{game.env.side} and ' +
-                                  f'{game.env.ships_count} ships')
+                    tweet_text = game.generate_tweet(name)
                     sharing.send_tweet(tweet_text)
             command = ''
             while command != 'y' and command != 'n':
                 command = input('do you want to start a new game?[y / n]: ')
                 if command == 'y':
                     game = Game()
-            if command == 'n':
-                cmd_e.executor.execute_command('exit')
+                elif command == 'n':
+                    raise ExitGame
         command = input().strip()
         data = command.split()
         if command == '':
