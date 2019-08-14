@@ -6,7 +6,6 @@ import sys
 if sys.platform == 'win32':
     try:
         import colorama
-
         colorama.init()
     except ImportError:
         pass
@@ -81,7 +80,7 @@ class Player:
     def __init__(self, typ, env):
         self.type = typ
         self.active = False
-        self.field = Honeycomb(env.side, self)
+        self.field = Honeycomb(env.side, self, env)
         self.shots_count = 0
         self.missed_count = 0
         self.hand = [env.ship_max - x for x in
@@ -133,14 +132,14 @@ class Environment:
             raise KeyError
 
     def reset_player_data(self, player):
-        player.field = Honeycomb(self.side, player.type)
+        player.field = Honeycomb(self.side, player.type, self)
         player.hand = [self.ship_max - x for x in range(self.ship_max)
                        for _ in range(x + 1)]
         player.fleet = 0
 
     def generate_user_field(self):
         _, player = self.get_active_player()
-        while not player.field.auto_generate(player.hand, player):
+        while not player.field.auto_generate():
             self.reset_player_data(player)
 
     def get_active_player(self):
@@ -162,12 +161,20 @@ class Environment:
 
 
 class Honeycomb:
-    def __init__(self, side, player):
+    def __init__(self, side, player, env):
         self.side = side
         self.field = []
         self.owner = player
         self.poses = []
         self.square = 0
+        self.corner_ships_count = 0
+        self.env = env
+        self.corners = ((0, 0),
+                        (0, side - 1),
+                        (side - 1, 0),
+                        (side * 2 - 1, side - 1),
+                        (side - 1, side * 2 - 1),
+                        (side * 2 - 1, side * 2 - 1))
 
         side_count = 0
         count = 0
@@ -216,14 +223,17 @@ class Honeycomb:
                         not self.owner.active):
                     res += (self.field[y][x].color.value +
                             CellState.EMPTY.value + Color.DEFAULT.value)
+                elif (self.field[y][x].color == Color.GREEN and
+                      self.owner.active and self.owner.is_fleet_placed()):
+                    res += self.field[y][x].state.value
                 else:
                     res += (self.field[y][x].color.value +
                             self.field[y][x].state.value +
                             Color.DEFAULT.value)
                 res += '   '
             if y < self.side - 1:
-                res += Color.BLUE.value + str(
-                    len(self.field[y]) - count + 1) + Color.DEFAULT.value
+                res += Color.BLUE.value + str(len(self.field[y]) - count +
+                                              1) + Color.DEFAULT.value
                 side_count += 1
                 spaces_count -= 2
             else:
@@ -243,25 +253,19 @@ class Honeycomb:
                 break
         return index <= x < len(self.field[y])
 
-    def fire_cell(self, x, y, env, player):
+    def fire_cell(self, x, y, player):
         if not self.is_in_bound(x, y):
             return FireResult.UNABLE
-        _, enemy = env.get_nonactive_player()
         if self.field[y][x].state == CellState.SHIP:
             self.field[y][x].state = CellState.FIRED
             player.shots_count += 1
-            if player.active:
-                self.field[y][x].color = Color.RED
-            else:
-                self.field[y][x].color = Color.GREEN
-            enemy.delete_cell_from_fleet()
+            self.field[y][x].color = Color.RED
+            self.owner.delete_cell_from_fleet()
             if self.is_ship_dead(x, y, x, y):
-                if player.active:
-                    self.change_color_death(x, y, x, y)
+                self.change_color_death(x, y, x, y)
                 return FireResult.DESTROYED
             else:
-                if player.active:
-                    self.change_color_hit(x, y, Color.GREEN)
+                self.change_color_hit(x, y, Color.GREEN)
                 return FireResult.HIT
         elif self.field[y][x].state == CellState.EMPTY:
             self.field[y][x].state = CellState.MISSED
@@ -333,12 +337,16 @@ class Honeycomb:
             for cell in row:
                 cell.color = Color.DEFAULT
 
-    def place_ship_on_field(self, cells_to_take, player):
+    def place_ship_on_field(self, cells_to_take):
         taken_cells = []
         ship_len = len(cells_to_take)
-        if not player.is_ship_in_hand(ship_len):
+        if not self.owner.is_ship_in_hand(ship_len):
             return PlacementResult.LENGTH
         for (x, y) in cells_to_take:
+            if (x, y) in self.corners:
+                if self.corner_ships_count + 1 >= 0.1 * self.env.ships_count:
+                    return PlacementResult.UNABLE
+                self.corner_ships_count += 1
             if not self.is_in_bound(x, y):
                 return PlacementResult.UNABLE
 
@@ -360,14 +368,15 @@ class Honeycomb:
         for cell in taken_cells:
             self.change_color_hit(cell.x, cell.y, Color.RED)
             cell.state = CellState.SHIP
-        player.move_ship_to_fleet(ship_len)
+        self.owner.move_ship_to_fleet(ship_len)
         for pos in cells_to_take:
             self.poses.remove(pos)
-        if not player.hand:
+        if not self.owner.hand:
             self.clear_colors()
         return PlacementResult.SUCCESS
 
-    def auto_generate(self, hand, player):
+    def auto_generate(self):
+        hand = self.owner.hand
         random.seed()
         start_time = time.process_time()
         while hand:
@@ -382,14 +391,15 @@ class Honeycomb:
                     cells_to_take = [(x + i, y + i) for i in range(ship_len)]
                 else:
                     cells_to_take = [(x + i, y) for i in range(ship_len)]
-                res = self.place_ship_on_field(cells_to_take, player)
+                res = self.place_ship_on_field(cells_to_take)
 
                 check_time = time.process_time()
                 if check_time - start_time > 0.5:
                     return False
         return True
 
-    def partition_auto_generate(self, hand, player):
+    def partition_auto_generate(self):
+        hand = self.owner.hand
         random.seed()
         start_time = time.process_time()
         y_border = hand[0]
@@ -414,14 +424,14 @@ class Honeycomb:
                     cells_to_take = [(x + i, y + i) for i in range(ship_len)]
                 else:
                     cells_to_take = [(x + i, y) for i in range(ship_len)]
-                res = self.place_ship_on_field(cells_to_take, player)
+                res = self.place_ship_on_field(cells_to_take)
 
                 check_time = time.process_time()
                 if check_time - start_time > 0.1:
                     return False
 
             if len(hand) == 1:
-                self.auto_generate(hand, player)
+                self.auto_generate()
                 break
 
         return True
@@ -444,19 +454,17 @@ class SimpleBotAI:
 
     def generate_bot_field(self, env):
         print('Bot field is being generated')
-        while not self.field.auto_generate(self.bot.hand, self.bot):
+        while not self.field.auto_generate():
             env.reset_player_data(self.bot)
         print('Field was generated successfully')
 
     def bot_fire(self, env):
-        result = ''
         _, enemy = env.get_nonactive_player()
-        while result != FireResult.MISSED:
-            y = random.randrange(self.bot.field.side * 2 - 1)
-            x = random.randrange(len(enemy.field.field[y]))
-            result = enemy.field.fire_cell(x, y, env, self.bot)
-            if result != FireResult.UNABLE:
-                print(PlayerType.BOT, result)
+
+        y = random.randrange(self.bot.field.side * 2 - 1)
+        x = random.randrange(len(enemy.field.field[y]))
+        result = enemy.field.fire_cell(x, y, self.bot)
+        return result
 
 
 class HardBotAI:
@@ -469,35 +477,32 @@ class HardBotAI:
 
     def generate_bot_field(self, env):
         print('Bot field is being generated')
-        while not self.field.partition_auto_generate(self.bot.hand, self.bot):
+        while not self.field.partition_auto_generate(self.bot):
             env.reset_player_data(self.bot)
         print('Field was generated successfully')
 
     def bot_fire(self, env):
-        result = ''
         _, enemy = env.get_nonactive_player()
-        while result != FireResult.MISSED:
-            if self.last_fire == (-1, -1):
-                y = random.randrange(enemy.field.side * 2 - 1)
-                x = random.randrange(len(enemy.field.field[y]))
-                result = enemy.field.fire_cell(x, y, env, self.bot)
-            else:
-                (prev_y, prev_x) = self.last_fire
-                ceil_y = prev_y + 2
-                floor_y = prev_y - 1
-                ceil_x = prev_x + 2
-                floor_x = prev_x - 1
-                while True:
-                    y = random.randrange(floor_y, ceil_y)
-                    x = random.randrange(floor_x, ceil_x)
-                    if ((y, x) != (floor_y, ceil_x - 1) or
-                            (y, x) != (ceil_y - 1, floor_x) or
-                            self.field.is_in_bound(y, x)):
-                        break
-                result = enemy.field.fire_cell(x, y, env, self.bot)
-            if result == FireResult.DESTROYED:
-                self.last_fire = (-1, -1)
-            elif result == FireResult.HIT:
-                self.last_fire = (y, x)
-            if result != FireResult.UNABLE:
-                print(PlayerType.BOT, result)
+        if self.last_fire == (-1, -1):
+            y = random.randrange(enemy.field.side * 2 - 1)
+            x = random.randrange(len(enemy.field.field[y]))
+            result = enemy.field.fire_cell(x, y, self.bot)
+        else:
+            (prev_y, prev_x) = self.last_fire
+            ceil_y = prev_y + 2
+            floor_y = prev_y - 1
+            ceil_x = prev_x + 2
+            floor_x = prev_x - 1
+            while True:
+                y = random.randrange(floor_y, ceil_y)
+                x = random.randrange(floor_x, ceil_x)
+                if ((y, x) != (floor_y, ceil_x - 1) or
+                        (y, x) != (ceil_y - 1, floor_x) or
+                        self.field.is_in_bound(y, x)):
+                    break
+            result = enemy.field.fire_cell(x, y, self.bot)
+        if result == FireResult.DESTROYED:
+            self.last_fire = (-1, -1)
+        elif result == FireResult.HIT:
+            self.last_fire = (y, x)
+        return result

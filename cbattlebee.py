@@ -57,7 +57,6 @@ class Game:
 
     def place_ship(self, ship_len, rotation, x, letters):
         y = self.letters_to_number(letters)
-        print(y)
         cells_to_take = []
         if rotation == 'vl':
             for i in range(ship_len):
@@ -75,7 +74,7 @@ class Game:
         if player.is_fleet_placed():
             print('Fleet is already placed!')
             return
-        res = player.field.place_ship_on_field(cells_to_take, player)
+        res = player.field.place_ship_on_field(cells_to_take)
         if res == genv.PlacementResult.SUCCESS:
             print(res)
         elif res == genv.PlacementResult.UNABLE:
@@ -93,7 +92,7 @@ class Game:
             print('you should place all your fleet before fire!')
             return True
 
-        result = player2.field.fire_cell(x, y, self.env, player1)
+        result = player2.field.fire_cell(x, y, player1)
         print(player1.type, result)
         if (result == genv.FireResult.DESTROYED or
                 result == genv.FireResult.HIT):
@@ -108,11 +107,16 @@ class Game:
     def bot_fire(self):
         bot = self.env.players['bot']
         _, user = self.env.get_nonactive_player()
-        bot.bot.fire(self.env)
+        result = ''
+        while result != genv.FireResult.MISSED:
+            result = bot.bot.fire(self.env)
+            if result != genv.FireResult.UNABLE:
+                print(genv.PlayerType.BOT, result)
+            if user.is_player_defeated():
+                self.finish = True
+                print('bot won!')
+                return
         self.switch_players()
-        if user.is_player_defeated():
-            self.finish = True
-            print('bot won!')
 
     def switch_players(self):
         _, player1 = self.env.get_active_player()
@@ -234,12 +238,12 @@ fire [d L] - shoot in "d L" cell"""
     @executor.command_decorator
     def new(g, d):
         """
-new <side> <difficulty> <ship_max> <mode> - start new game
+new <side> <ship_max> <mode> <difficulty> - start new game
 All arguments are optional:
 side - side length
-difficulty - difficulty 0 or 1
 ship_max - maximum ship length
-mode - game mode: hs or bot"""
+mode - game mode: hs or bot
+difficulty - difficulty 0 or 1 in bot mode"""
         if len(d) > 5:
             print('More command arguments than expected')
             return g
@@ -249,20 +253,19 @@ mode - game mode: hs or bot"""
             print('Wrong side!')
             return g
         try:
-            diff = int(d[2]) if len(d) > 2 else 0
-        except ValueError:
-            print('Wrong difficulty!')
-            return g
-        try:
-            ship_max = int(d[3]) if len(d) > 3 else 4
+            ship_max = int(d[2]) if len(d) > 2 else 4
         except ValueError:
             print('Wrong ship length!')
             return g
-        if len(d) > 4:
-            if d[4] != GameMode.HOT_SEAT.value and d[4] != GameMode.BOT.value:
+        if len(d) > 3 and d[3] != GameMode.HOT_SEAT.value and d[3] != GameMode.BOT.value:
                 print('Wrong mode!')
                 return g
-        mode = d[4] if len(d) > 4 else 'bot'
+        mode = d[3] if len(d) > 3 else 'bot'
+        try:
+            diff = int(d[4]) if len(d) > 4 else 0
+        except ValueError:
+            print('Wrong difficulty!')
+            return g
         return Game(side, diff, ship_max, mode)
 
     @executor.command_decorator

@@ -21,7 +21,7 @@ class CellTest(unittest.TestCase):
 class EnvironmentTest(unittest.TestCase):
     def test_player_defeated(self):
         env = Environment(3, ship_max=1)
-        env.user_field.place_ship_on_field([(0, 0)], env, PlayerType.USER)
+        env.user_field.place_ship_on_field([(0, 0)])
         self.assertFalse(env.is_player_defeated(PlayerType.USER))
         env.user_field.fire_cell(0, 0, env)
         self.assertTrue(env.is_player_defeated(PlayerType.USER))
