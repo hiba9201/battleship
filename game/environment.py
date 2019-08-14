@@ -437,7 +437,7 @@ class Honeycomb:
         return True
 
 
-class BotAI:
+class BotAI:  # TODO move all 'print()'s to `cbattlebee.py`
     def __init__(self, difficulty):
         if difficulty > 1:
             raise ValueError

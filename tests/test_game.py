@@ -18,7 +18,7 @@ class CellTest(unittest.TestCase):
         self.assertFalse(first != third)
 
 
-class EnvironmentTest(unittest.TestCase):
+class EnvironmentTest(unittest.TestCase):  # TODO fix tests
     def test_player_defeated(self):
         env = Environment(3, ship_max=1)
         env.user_field.place_ship_on_field([(0, 0)])
