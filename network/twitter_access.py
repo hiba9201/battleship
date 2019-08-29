@@ -1,6 +1,7 @@
 import tweepy
 import re
 import requests
+import json
 
 
 class Twitter:
@@ -20,22 +21,44 @@ class Twitter:
         self.auth_token = re_auth_token.search(get_resp.text).group(1)
         self.api = None
 
-    # TODO add access_token save and fetch it from file if user isn't new
     def try_auth_in(self, login, password):
-        post_resp = self.session.post(self.auth_url, data={
-            'authenticity_token': self.auth_token,
-            'oauth_token': self.auth.request_token['oauth_token'],
-            'session[username_or_email]': login,
-            'session[password]': password,
-            'remember_me': '0'})
+        try:
+            with open('access.json') as f:
+                text = f.read()
+        except FileNotFoundError:
+            with open('access.json', 'a'):
+                text = '{}'
+        data = json.loads(text)
+        if not data or login not in data:
+            post_resp = self.session.post(self.auth_url, data={
+                'authenticity_token': self.auth_token,
+                'oauth_token': self.auth.request_token['oauth_token'],
+                'session[username_or_email]': login,
+                'session[password]': password,
+                'remember_me': '0'})
 
-        re_verifier = re.compile(r'oauth_verifier=(\w+?)"', re.M)
-        res = re_verifier.search(post_resp.text)
-        if res is None:
+            re_verifier = re.compile(r'oauth_verifier=(\w+?)"', re.M)
+            res = re_verifier.search(post_resp.text)
+            if res is None:
+                return False
+            verifier = res.group(1)
+
+            try:
+                self.auth.get_access_token(verifier)
+            except tweepy.TweepError:
+                return False
+
+            data[login] = (self.auth.access_token,
+                           self.auth.access_token_secret)
+            new_dump = json.dumps(data)
+            with open('access.json', 'w') as f:
+                f.write(new_dump)
+        elif login in data:
+            self.auth.set_access_token(data[login][0], data[login][1])
+        else:
             return False
-        verifier = res.group(1)
+            raise ImportError
 
-        self.auth.get_access_token(verifier)
         self.api = tweepy.API(self.auth)
         return True
 
