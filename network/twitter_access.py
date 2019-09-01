@@ -57,7 +57,6 @@ class Twitter:
             self.auth.set_access_token(data[login][0], data[login][1])
         else:
             return False
-            raise ImportError
 
         self.api = tweepy.API(self.auth)
         return True

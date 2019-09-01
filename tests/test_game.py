@@ -5,7 +5,8 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              os.path.pardir))
 
-from game.environment import (Honeycomb, Environment, Cell, CellState, PlayerType,
+from game.environment import (Honeycomb, Environment, Cell, CellState,
+                              PlayerType, Player,
                               FireResult, PlacementResult)
 
 
@@ -18,26 +19,29 @@ class CellTest(unittest.TestCase):
         self.assertFalse(first != third)
 
 
-class EnvironmentTest(unittest.TestCase):  # TODO fix tests
+class EnvironmentTest(unittest.TestCase):
     def test_player_defeated(self):
-        env = Environment(3, ship_max=1)
-        env.user_field.place_ship_on_field([(0, 0)])
-        self.assertFalse(env.is_player_defeated(PlayerType.USER))
-        env.user_field.fire_cell(0, 0, env)
-        self.assertTrue(env.is_player_defeated(PlayerType.USER))
+        env = Environment(3, 0, 1)
+        env.add_player(PlayerType.USER, 'user')
+        env.players['user'].field.place_ship_on_field([(1, 0)])
+        self.assertFalse(env.players['user'].is_player_defeated())
+        env.players['user'].field.fire_cell(1, 0, Player(PlayerType.BOT, env))
+        self.assertTrue(env.players['user'].is_player_defeated())
 
     def test_fleet_placement(self):
-        env = Environment(3, ship_max=1)
-        self.assertFalse(env.is_fleet_placed())
-        env.user_field.place_ship_on_field([(0, 0)], env, PlayerType.USER)
-        self.assertTrue(env.is_fleet_placed())
+        env = Environment(3, 0, 1)
+        env.add_player(PlayerType.USER, 'user')
+        self.assertFalse(env.players['user'].is_fleet_placed())
+        env.players['user'].field.place_ship_on_field([(1, 0)])
+        self.assertTrue(env.players['user'].is_fleet_placed())
 
     def test_player_have_ship_on_hands(self):
-        env = Environment(3, ship_max=1)
-        self.assertFalse(env.is_ship_in_stack(2, PlayerType.USER))
-        self.assertTrue(env.is_ship_in_stack(1, PlayerType.USER))
-        env.user_field.place_ship_on_field([(0, 0)], env, PlayerType.USER)
-        self.assertFalse(env.is_ship_in_stack(1, PlayerType.USER))
+        env = Environment(3, 0, 1)
+        env.add_player(PlayerType.USER, 'user')
+        self.assertFalse(env.players['user'].is_ship_in_hand(2))
+        self.assertTrue(env.players['user'].is_ship_in_hand(1))
+        env.players['user'].field.place_ship_on_field([(1, 0)])
+        self.assertFalse(env.players['user'].is_ship_in_hand(1))
 
 
 class HoneycombTest(unittest.TestCase):
@@ -48,47 +52,54 @@ class HoneycombTest(unittest.TestCase):
         self.assertEqual('AOC', Honeycomb.number_to_letters(1068))
 
     def test_place_1_ship(self):
-        env = Environment(5, ship_max=2)
-        env.user_field.field[1][1].state = CellState.SHIP
+        env = Environment(5, 0, 2)
+        env.add_player(PlayerType.USER, 'user')
+        env.players['user'].field.field[1][1].state = CellState.SHIP
         self.assertNotEqual(
-            env.user_field.place_ship_on_field([(0, 0)], env, PlayerType.USER),
+            env.players['user'].field.place_ship_on_field([(0, 1)]),
             PlacementResult.SUCCESS)
         self.assertEqual(
-            env.user_field.place_ship_on_field([(1, 3)], env, PlayerType.USER),
+            env.players['user'].field.place_ship_on_field([(1, 3)]),
             PlacementResult.SUCCESS)
 
     def test_place_2_ship(self):
-        env = Environment(5, ship_max=2)
-        env.user_field.field[1][1].state = CellState.SHIP
+        env = Environment(5, 0, 2)
+        env.add_player(PlayerType.USER, 'user')
+        env.players['user'].field.field[1][1].state = CellState.SHIP
         self.assertNotEqual(
-            env.user_field.place_ship_on_field([(0, 0), (0, 1)], env,
-                                               PlayerType.USER),
+            env.players['user'].field.place_ship_on_field([(0, 0), (0, 1)]),
             PlacementResult.SUCCESS)
         self.assertEqual(
-            env.user_field.place_ship_on_field([(1, 3), (2, 3)], env,
-                                               PlayerType.USER),
+            env.players['user'].field.place_ship_on_field([(1, 3), (2, 3)]),
             PlacementResult.SUCCESS)
 
     def test_bound(self):
-        field = Honeycomb(3, PlayerType.USER)
+        env = Environment(3, 0, 1)
+        field = Honeycomb(3, Player(PlayerType.USER, env), env)
         self.assertTrue(field.is_in_bound(1, 1))
         self.assertFalse(field.is_in_bound(4, 1))
         self.assertFalse(field.is_in_bound(-1, 1))
         self.assertFalse(field.is_in_bound(4, 6))
 
     def test_fire_not_destroyed(self):
-        env = Environment(5, ship_max=2)
-        env.user_field.place_ship_on_field([(0, 0), (0, 1)], env, PlayerType.USER)
-        state = env.user_field.fire_cell(0, 0, env)
-        self.assertFalse(env.is_player_defeated(PlayerType.USER))
-        self.assertEqual(state, FireResult.HIT)
+        env = Environment(5, 0, 2)
+        env.add_player(PlayerType.USER, 'user')
+        env.players['user'].field.place_ship_on_field([(0, 2), (0, 1)])
+        state = env.players['user'].field.fire_cell(0, 2,
+                                                    Player(PlayerType.BOT,
+                                                           env))
+        self.assertFalse(env.players['user'].is_player_defeated())
+        self.assertEqual(FireResult.HIT, state)
 
     def test_fire_destroyed(self):
-        env = Environment(5, ship_max=1)
-        env.user_field.place_ship_on_field([(0, 0)], env, PlayerType.USER)
-        state = env.user_field.fire_cell(0, 0, env)
-        self.assertTrue(env.is_player_defeated(PlayerType.USER))
-        self.assertEqual(state, FireResult.DESTROYED)
+        env = Environment(5, 0, 1)
+        env.add_player(PlayerType.USER, 'user')
+        env.players['user'].field.place_ship_on_field([(0, 1)])
+        state = env.players['user'].field.fire_cell(0, 1,
+                                                    Player(PlayerType.BOT,
+                                                           env))
+        self.assertTrue(env.players['user'].is_player_defeated())
+        self.assertEqual(FireResult.DESTROYED, state)
 
 
 if __name__ == '__main__':
