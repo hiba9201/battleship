@@ -3,9 +3,12 @@ import random
 import time
 import sys
 
+import game.utils as utils
+
 if sys.platform == 'win32':
     try:
         import colorama
+
         colorama.init()
     except ImportError:
         pass
@@ -152,12 +155,12 @@ class Environment:
             if not p.active:
                 return n, p
 
-    @property
+    @property  # TODO add test
     def ships_count(self):
         res = 0
         for i in range(self.ship_max):
             res += i + 1
-        return res
+        return (1 + self.ship_max) * self.ship_max / 2
 
 
 class Honeycomb:
@@ -192,56 +195,48 @@ class Honeycomb:
             else:
                 count += 1
 
-    @staticmethod
-    def number_to_letters(number):
-        res = ''
-        while number >= 26:
-            res += chr(ord('A') + number % 26)
-            number = number // 26 - 1
-        else:
-            res += chr(ord('A') + number)
-        return res[::-1]
-
     def __str__(self):
         side_count = 0
         count = 0
         spaces_count = self.side * 2 - side_count
-        res = ' ' * (spaces_count + 1) + '     '
+        result = [' ' * (spaces_count + 1) + '     ']
 
         for x in range(self.side):
-            res += Color.BLUE.value + str(x + 1) + Color.DEFAULT.value
-            res += '   '
-        res += '\n'
+            result.append(Color.BLUE.value + str(x + 1) + Color.DEFAULT.value +
+                          '   ')
+        result.append('\n')
 
         for y in range(self.side * 2 - 1):
-            letters = self.number_to_letters(y)
-            res += ' ' * (spaces_count - len(letters) + 1)
-            res += (Color.PURPLE.value + letters +
-                    Color.DEFAULT.value + '   ')
+            letters = utils.Utils.number_to_letters(y)
+            result.append(' ' * (spaces_count - len(letters) + 1))
+            result.append(Color.PURPLE.value + letters + Color.DEFAULT.value +
+                          '   ')
             for x in range(count, len(self.field[y])):
                 if (self.field[y][x].state == CellState.SHIP and
                         not self.owner.active):
-                    res += (self.field[y][x].color.value +
-                            CellState.EMPTY.value + Color.DEFAULT.value)
+                    result.append(self.field[y][x].color.value +
+                                  CellState.EMPTY.value + Color.DEFAULT.value)
                 elif (self.field[y][x].color == Color.GREEN and
                       self.owner.active and self.owner.is_fleet_placed()):
-                    res += self.field[y][x].state.value
+                    result.append(self.field[y][x].state.value)
                 else:
-                    res += (self.field[y][x].color.value +
-                            self.field[y][x].state.value +
-                            Color.DEFAULT.value)
-                res += '   '
+                    result.append(self.field[y][x].color.value +
+                                  self.field[y][x].state.value +
+                                  Color.DEFAULT.value)
+                result.append('   ')
+
             if y < self.side - 1:
-                res += Color.BLUE.value + str(len(self.field[y]) - count +
-                                              1) + Color.DEFAULT.value
+                result.append(Color.BLUE.value +
+                              str(len(self.field[y]) - count + 1) +
+                              Color.DEFAULT.value)
                 side_count += 1
                 spaces_count -= 2
             else:
                 count += 1
                 spaces_count += 2
-            res += '\n'
+            result.append('\n')
 
-        return res
+        return ''.join(result)
 
     def is_in_bound(self, x, y):
         if not 0 <= y < (self.side * 2 - 1):
@@ -277,47 +272,44 @@ class Honeycomb:
             return FireResult.UNABLE
 
     def change_color_hit(self, x, y, color):
-        ceil_y = y + 2
-        floor_y = y - 1
-        ceil_x = x + 2
-        floor_x = x - 1
-        for i in range(floor_y, ceil_y):
-            for j in range(floor_x, ceil_x):
-                if (i, j) == (floor_y, ceil_x - 1) or (i, j) == (
-                        ceil_y - 1, floor_x) or not self.is_in_bound(j, i):
+        ship_limits = utils.Utils.get_ship_borders(x, y)
+        borders = ((ship_limits['floor_y'], ship_limits['ceil_x'] - 1),
+                   (ship_limits['ceil_y'] - 1, ship_limits['floor_x']))
+
+        for i in range(ship_limits['floor_y'], ship_limits['ceil_y']):
+            for j in range(ship_limits['floor_x'], ship_limits['ceil_x']):
+                if (i, j) in borders or not self.is_in_bound(j, i):
                     continue
                 if (self.field[i][j].state != CellState.MISSED and
                         self.field[i][j].color != Color.RED):
                     self.field[i][j].color = color
 
     def change_color_death(self, x, y, prev_x, prev_y):
-        ceil_y = y + 2
-        floor_y = y - 1
-        ceil_x = x + 2
-        floor_x = x - 1
-        for i in range(floor_y, ceil_y):
-            for j in range(floor_x, ceil_x):
-                if (i, j) == (floor_y, ceil_x - 1) or (i, j) == (
-                        ceil_y - 1, floor_x) or not self.is_in_bound(j, i):
+        ship_limits = utils.Utils.get_ship_borders(x, y)
+        borders = ((ship_limits['floor_y'], ship_limits['ceil_x'] - 1),
+                   (ship_limits['ceil_y'] - 1, ship_limits['floor_x']))
+
+        for i in range(ship_limits['floor_y'], ship_limits['ceil_y']):
+            for j in range(ship_limits['floor_x'], ship_limits['ceil_x']):
+                if (i, j) in borders or not self.is_in_bound(j, i):
                     continue
                 if self.field[i][j].state == CellState.DEAD:
-                    if (self.field[i][j] != self.field[y][x] and
-                            self.field[i][j] != self.field[prev_y][prev_x]):
+                    if not (self.field[i][j] in (
+                            self.field[y][x], self.field[prev_y][prev_x])):
                         self.change_color_death(j, i, x, y)
-                elif self.field[y][x].state == CellState.DEAD:
-                    if self.field[i][j].state != CellState.MISSED:
-                        self.field[i][j].color = Color.RED
+                elif (self.field[y][x].state == CellState.DEAD and
+                      self.field[i][j].state != CellState.MISSED):
+                    self.field[i][j].color = Color.RED
         return True
 
     def is_ship_dead(self, x, y, prev_x, prev_y):
-        ceil_y = y + 2
-        floor_y = y - 1
-        ceil_x = x + 2
-        floor_x = x - 1
-        for i in range(floor_y, ceil_y):
-            for j in range(floor_x, ceil_x):
-                if (i, j) == (floor_y, ceil_x) or (i, j) == (
-                        ceil_y, floor_x) or not self.is_in_bound(j, i):
+        ship_limits = utils.Utils.get_ship_borders(x, y)
+        borders = ((ship_limits['floor_y'], ship_limits['ceil_x']),
+                   (ship_limits['ceil_y'], ship_limits['floor_x']))
+
+        for i in range(ship_limits['floor_y'], ship_limits['ceil_y']):
+            for j in range(ship_limits['floor_x'], ship_limits['ceil_x']):
+                if (i, j) in borders or not self.is_in_bound(j, i):
                     continue
                 if self.field[i][j].state == CellState.FIRED:
                     if (self.field[i][j] != self.field[y][x] and
@@ -354,12 +346,10 @@ class Honeycomb:
             floor_y = max(y - 1, 0)
             ceil_x = min(x + 2, len(self.field[y]))
             floor_x = max(x - 1, 0)
-
+            borders = ((ceil_x, floor_y), (floor_x, ceil_y))
             for i in range(floor_x, ceil_x):
                 for j in range(floor_y, ceil_y):
-                    if ((i == ceil_x and j == floor_y) or
-                            (j == ceil_y and i == floor_x) or
-                            not self.is_in_bound(i, j)):
+                    if (i, j) in borders or not self.is_in_bound(i, j):
                         continue
                     if ((self.field[j][i].state != CellState.EMPTY) and
                             self.field[j][i] not in taken_cells):
@@ -437,28 +427,23 @@ class Honeycomb:
         return True
 
 
-class BotAI:  # TODO move all 'print()'s to `cbattlebee.py`
+class BotAI:
     def __init__(self, difficulty):
-        if difficulty > 1:
-            raise ValueError
-        self.diffs = [SimpleBotAI, HardBotAI]
-        self.bot = self.diffs[difficulty]
+        self.bot = BotAI.__subclasses__()[difficulty]
 
 
-class SimpleBotAI:
+class SimpleBotAI(BotAI):
     def __init__(self, bot):
         self.field = bot.field
         self.bot = bot
-        self.generator = lambda e: self.generate_bot_field(e)
-        self.fire = lambda e: self.bot_fire(e)
 
-    def generate_bot_field(self, env):
+    def generator(self, env):
         print('Bot field is being generated')
         while not self.field.auto_generate():
             env.reset_player_data(self.bot)
         print('Field was generated successfully')
 
-    def bot_fire(self, env):
+    def fire(self, env):
         _, enemy = env.get_nonactive_player()
 
         y = random.randrange(self.bot.field.side * 2 - 1)
@@ -467,21 +452,19 @@ class SimpleBotAI:
         return result
 
 
-class HardBotAI:
+class HardBotAI(BotAI):
     def __init__(self, bot):
         self.field = bot.field
         self.bot = bot
-        self.generator = lambda e: self.generate_bot_field(e)
-        self.fire = lambda e: self.bot_fire(e)
         self.last_fire = (-1, -1)
 
-    def generate_bot_field(self, env):
+    def generator(self, env):
         print('Bot field is being generated')
         while not self.field.partition_auto_generate(self.bot):
             env.reset_player_data(self.bot)
         print('Field was generated successfully')
 
-    def bot_fire(self, env):
+    def fire(self, env):
         _, enemy = env.get_nonactive_player()
         if self.last_fire == (-1, -1):
             y = random.randrange(enemy.field.side * 2 - 1)

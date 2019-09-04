@@ -24,11 +24,9 @@ class Twitter:
     def try_auth_in(self, login, password):
         try:
             with open('access.json') as f:
-                text = f.read()
+                data = json.load(f)
         except FileNotFoundError:
-            with open('access.json', 'a'):
-                text = '{}'
-        data = json.loads(text)
+            data = {}
         if not data or login not in data:
             post_resp = self.session.post(self.auth_url, data={
                 'authenticity_token': self.auth_token,
@@ -50,9 +48,9 @@ class Twitter:
 
             data[login] = (self.auth.access_token,
                            self.auth.access_token_secret)
-            new_dump = json.dumps(data)
             with open('access.json', 'w') as f:
-                f.write(new_dump)
+                json.dump(data, f)
+
         elif login in data:
             self.auth.set_access_token(data[login][0], data[login][1])
         else:
