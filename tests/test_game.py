@@ -8,6 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 from game.environment import (Honeycomb, Environment, Cell, CellState,
                               PlayerType, Player,
                               FireResult, PlacementResult)
+from game.utils import Utils
 
 
 class CellTest(unittest.TestCase):
@@ -44,13 +45,15 @@ class EnvironmentTest(unittest.TestCase):
         self.assertFalse(env.players['user'].is_ship_in_hand(1))
 
 
-class HoneycombTest(unittest.TestCase):
+class UtilsTest(unittest.TestCase):
     def test_num_to_letter(self):
-        self.assertEqual('A', Honeycomb.number_to_letters(0))
-        self.assertEqual('C', Honeycomb.number_to_letters(2))
-        self.assertEqual('AB', Honeycomb.number_to_letters(27))
-        self.assertEqual('AOC', Honeycomb.number_to_letters(1068))
+        self.assertEqual('A', Utils.number_to_letters(0))
+        self.assertEqual('C', Utils.number_to_letters(2))
+        self.assertEqual('AB', Utils.number_to_letters(27))
+        self.assertEqual('AOC', Utils.number_to_letters(1068))
 
+
+class HoneycombTest(unittest.TestCase):
     def test_place_1_ship(self):
         env = Environment(5, 0, 2)
         env.add_player(PlayerType.USER, 'user')
