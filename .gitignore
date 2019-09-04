@@ -4,3 +4,5 @@ node_modules/
 .idea/
 .coverage
 .DS_Store
+game/__pycache__/
+tests/__pycache__/
