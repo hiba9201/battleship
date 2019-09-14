@@ -27,6 +27,10 @@ class Game:
     def __init__(self, side=6, diff=0, ship_max=4, mode='bot', player_1='',
                  player_2=''):
         self.env = genv.Environment(side, diff, ship_max)
+        if sum(self.env.ship_cells) / genv.Honeycomb(side, genv.Player,
+                                                     self.env).square > 0.3:
+            print('Impossible size values. Game started with default size')
+            self.env = genv.Environment(6, diff, 4)
         self.mode = GameMode(mode)
         self.finish = False
 
@@ -34,7 +38,7 @@ class Game:
             if player_1:
                 username = player_1
             else:
-                username = utils.Utils.username_input('')
+                username = self.username_input('player')
             self.env.add_player(genv.PlayerType.USER, username)
             self.env.players[username].active = True
             self.env.add_player(genv.PlayerType.BOT, 'bot')
@@ -43,15 +47,22 @@ class Game:
             if player_1:
                 username = player_1
             else:
-                username = utils.Utils.username_input('first')
+                username = self.username_input('first player')
             self.env.add_player(genv.PlayerType.USER, username)
             self.env.players[username].active = True
             if player_2:
                 username = player_2
             else:
-                username = utils.Utils.username_input('second')
+                username = self.username_input('second player')
             self.env.add_player(genv.PlayerType.USER, username)
             print('New hot seat game started. Enter command:')
+
+    def username_input(self, player_calling):
+        username = ''
+        while (not username or ' ' in username or
+               self.env.player_exists(username)):
+            username = input(f'{player_calling}, enter name: ')
+        return username.lstrip()
 
     def place_ship(self, ship_len, rotation, x, letters):
         y = utils.Utils.letters_to_number(letters)
@@ -89,7 +100,7 @@ class Game:
         _, player2 = self.env.get_nonactive_player()
         if not player1.is_fleet_placed():
             print('you should place all your fleet before fire!')
-            return True
+            return False
 
         result = player2.field.fire_cell(x, y, player1)
         print(player1.type, result)
@@ -98,10 +109,10 @@ class Game:
             if player2.is_player_defeated():
                 self.finish = True
                 print(f'{name1} won!')
-            return True
+            return False
         if result == genv.FireResult.UNABLE:
-            return True
-        return False
+            return False
+        return True
 
     def bot_fire(self):
         bot = self.env.players['bot']
@@ -130,14 +141,13 @@ class Game:
                 os.system('clear')
         print(name + "'s move")
 
-    def generate_tweet(self, username):
-        _, player = self.env.get_active_player()
-        return (f'I won "{username}" in Battlebee game with ' +
+    def generate_tweet(self, enemy_name, player, action):
+        return (f'I {action} "{enemy_name}" in Battlebee game with ' +
                 f'hexagonal field with side length ' +
                 f'{self.env.side} and ' +
                 f'{self.env.ships_count} ships\n' +
                 f'shots: {player.shots_count}\n' +
-                f'missed: {player.missed_count}')
+                f'missed: {player.missed_count}\n')
 
 
 class CommandExecutor:
@@ -154,7 +164,7 @@ class CommandExecutor:
     def command_decorator(self, function):
         @functools.wraps(function)
         def command_func(*args):
-            return function(*args)  # something about errors checks
+            return function(*args)
 
         self.commands[function.__name__] = command_func
 
@@ -186,13 +196,12 @@ auto - automatically generate user's field"""
             print('Wrong command arguments amount')
         else:
             cur_game.env.generate_user_field()
+            print('Field was generated\r')
             if cur_game.mode == GameMode.HOT_SEAT:
                 print('player placed their fleet')
                 cur_game.switch_players()
-            print('Field was generated\r')
         return cur_game
 
-    # TODO print stat
     @executor.command_decorator
     def show(cur_game, cmd_data):
         """
@@ -230,7 +239,7 @@ fire [d L] - shoot in "d L" cell"""
             print('Wrong command arguments amount')
         elif not re.match(r'fire \d{1,2} [A-Za-z]', ' '.join(pos)):
             print('Wrong fire data')
-        elif not cur_game.fire_with_fire_turn(int(pos[1]) - 1, pos[2].upper()):
+        elif cur_game.fire_with_fire_turn(int(pos[1]) - 1, pos[2].upper()):
             cur_game.switch_players()
             if cur_game.mode == GameMode.BOT:
                 game.bot_fire()
@@ -260,7 +269,7 @@ If some of the arguments weren't given last ones will be used"""
             print('Wrong ship length!')
             return g
         if len(d) > 3 and d[3] != GameMode.HOT_SEAT.value and d[
-            3] != GameMode.BOT.value:
+                3] != GameMode.BOT.value:
             print('Wrong mode!')
             return g
         mode = d[3] if len(d) > 3 else g.mode.value
@@ -310,6 +319,34 @@ stat - show current game statistics
         return g
 
 
+class CLI:
+    @staticmethod
+    def share_in_twitter(player, enemy_name, action):
+        command = ''
+        while command not in ('y', 'n'):
+            command = input(f'{player[0]}, do you want to share game\'s' +
+                            ' result on Twitter?[y / n]: ').strip()
+        if command == 'y':
+            login = input('Twitter login: ')
+            password = getpass.getpass('Twitter password: ')
+            auth_result = sharing.try_auth_in(login, password)
+            while True:
+                if auth_result == tw_acces.AuthState.LOGIN_PASS_ERROR:
+                    login = input('Twitter login: ')
+                    password = getpass.getpass('Twitter password: ')
+                elif auth_result == tw_acces.AuthState.PASSWORD_ERROR:
+                    password = getpass.getpass('Twitter password: ')
+                elif auth_result == tw_acces.AuthState.FATAL_ERROR:
+                    print('Internal error! Unable to auth!')
+                    break
+                elif auth_result == tw_acces.AuthState.SUCCESS:
+                    tweet_text = game.generate_tweet(enemy_name, player[1],
+                                                     action)
+                    sharing.send_tweet(tweet_text)
+                    break
+                auth_result = sharing.try_auth_in(login, password)
+
+
 if __name__ == '__main__':
 
     game = Game()
@@ -320,18 +357,10 @@ if __name__ == '__main__':
     while True:
         if game.finish:
             if game.mode == GameMode.HOT_SEAT:
-                while command not in ('y', 'n'):
-                    command = input('do you want to share game\'s result ' +
-                                    'on Twitter?[y / n]: ')
-                if command == 'y':
-                    login = input('Twitter login: ')
-                    password = getpass.getpass('Twitter password: ')
-                    while not sharing.try_auth_in(login, password):
-                        login = input('Twitter login: ')
-                        password = getpass.getpass('Twitter password: ')
-                    name, _ = game.env.get_nonactive_player()
-                    tweet_text = game.generate_tweet(name)
-                    sharing.send_tweet(tweet_text)
+                winner = game.env.get_active_player()
+                looser = game.env.get_nonactive_player()
+                CLI.share_in_twitter(winner, looser[0], 'won')
+                CLI.share_in_twitter(looser, winner[0], 'lost')
             command = ''
             while command != 'y' and command != 'n':
                 command = input('do you want to start a new game?[y / n]: ')

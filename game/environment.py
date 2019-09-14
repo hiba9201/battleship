@@ -94,7 +94,10 @@ class Player:
                               range(env.ship_max) for _ in
                               range(x + 1)]
         if typ == PlayerType.BOT:
-            self.bot = BotAI(env.diff).bot(self)
+            self.AI = BotAI(env.diff)
+            if self.AI.diff != env.diff:
+                env.diff = self.AI.diff
+            self.bot = self.AI.bot(self)
             self.bot.generator(env)
 
     def is_ship_in_hand(self, ship_len):
@@ -127,6 +130,13 @@ class Environment:
         self.diff = diff
         self.side = side
         self.players = {}
+        self.ship_cells = [ship_max - x for x in
+                           range(ship_max) for _ in range(x + 1)]
+
+    def player_exists(self, name):
+        if name in self.players:
+            return True
+        return False
 
     def add_player(self, typ, name):
         if name not in self.players.keys():
@@ -157,10 +167,7 @@ class Environment:
 
     @property  # TODO add test
     def ships_count(self):
-        res = 0
-        for i in range(self.ship_max):
-            res += i + 1
-        return (1 + self.ship_max) * self.ship_max / 2
+        return (1 + self.ship_max) * self.ship_max // 2
 
 
 class Honeycomb:
@@ -336,7 +343,7 @@ class Honeycomb:
             return PlacementResult.LENGTH
         for (x, y) in cells_to_take:
             if (x, y) in self.corners:
-                if self.corner_ships_count + 1 >= 0.1 * self.env.ships_count:
+                if self.corner_ships_count + 1 > 0.1 * self.env.ships_count:
                     return PlacementResult.UNABLE
                 self.corner_ships_count += 1
             if not self.is_in_bound(x, y):
@@ -429,7 +436,12 @@ class Honeycomb:
 
 class BotAI:
     def __init__(self, difficulty):
-        self.bot = BotAI.__subclasses__()[difficulty]
+        try:
+            self.bot = BotAI.__subclasses__()[difficulty]
+            self.diff = difficulty
+        except IndexError:
+            self.bot = BotAI.__subclasses__()[0]
+            self.diff = 0
 
 
 class SimpleBotAI(BotAI):
