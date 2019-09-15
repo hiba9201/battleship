@@ -23,8 +23,8 @@ class AuthState(enum.Enum):
 
 
 class Twitter:
-    CONSUMER_KEY = 'aO6Z2tez2HJWxBtyVuWvfJxQn'
-    CONSUMER_SECRET = 'hYTXyEsV5wItp39R0Ex9x5iVOOpmSjTcWJ9BN3lOJmZ1IvUVZt'
+    CONSUMER_KEY = ''
+    CONSUMER_SECRET = ''
 
     def __init__(self):
         self.auth = tweepy.OAuthHandler(self.CONSUMER_KEY,
